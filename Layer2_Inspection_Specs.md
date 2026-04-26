@@ -160,7 +160,22 @@ Verdict:
 
 ---
 
-## §6 — Original Maren PDF / LaTeX — Eqn B-1 sign settlement (Audit E8 caveat)
+## §6 — Original Maren PDF / LaTeX — Eqn B-1 sign settlement (Audit E8 caveat) — ✅ COMPLETED 2026-04-26
+
+**Settlement outcome.** This gate was settled in Phase P5 of the [Audit Remediation Plan](Audit_Remediation_Plan.md). The organic operator supplied the original PDF on 2026-04-26; direct inspection by Anthropic Claude (Opus 4.7) produced a reviewer report following the template at the bottom of this section. **Settlement summary**:
+
+- ✅ E8 confirmed: Eqn B-1 (PDF page 54) lacks the minus sign; Eqn B-8 (PDF page 58) has it. Maren self-flags on page 56 ("We do not have agreement"). Confidence upgrades to 5/5 per the acceptance gate; severity remains Serious; refined repair: relabel B-1 as Beal-convention or remove (not "insert a minus sign").
+- ✅ E15 resolved: text extraction was substantively faithful; only Greek letters and operator symbols were rendered as artifacts.
+- ⚠ A.1.a REVERSED: the arXiv watermark `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` is on page 1 — the original filename was correct.
+- ✅ All E1–E14 findings verified verbatim against the PDF.
+- ➕ 5 new findings surfaced (ψ̃/η̃ notation; Friston-acknowledged TR; i-suppression pattern in Eqns 5/9/10/11/13; second L at Eqn 33; Table 4 column λ).
+
+**Caveat.** The reviewer was Claude (AI), not a human expert. The acceptance test for §6 is mechanical (does the PDF show a minus sign or not?) and does not require human judgment. Subsequent Layer 2 gates that *do* require human judgment (Beal §2.2.1 first-hand reading, NESS argument re-derivation, expert review of v3) remain pending.
+
+The full reviewer report is in [`Phase_P5_OODA.md`](Phase_P5_OODA.md) §6. The original specification (template + acceptance criteria) is preserved below for reference.
+
+---
+
 
 **Source.** Maren TR-2019-01v6 *original PDF or LaTeX source*.
 
@@ -260,7 +275,7 @@ A v3 release that has cleared Layer 2 must have **all of the following**:
 | L2-3 | Friston (2015) cited equations verified | reviewer report on file |
 | L2-4 | Sengupta-Stemmler-Friston (2013) Helmholtz quote verified verbatim | reviewer report on file |
 | L2-5 | Kikuchi & Brush (1967) cluster-entropy formula verified | reviewer report on file |
-| L2-6 | Original Maren PDF inspected; E8 verdict | reviewer report on file |
+| L2-6 | ✅ COMPLETED 2026-04-26 — Original Maren PDF inspected; E8 verdict (5/5, Serious, refined repair); E15 resolved; A.1.a reversed; full reviewer report in [Phase_P5_OODA.md](Phase_P5_OODA.md) | settled |
 | L2-7 | Blei et al. (2017) notation verified | reviewer report on file |
 | L2-8 | (Optional) Hafner et al., Friston et al. (2024) verified | reviewer report on file |
 | L2-9 | At least two qualified human experts have reviewed v2 (Plan §7.1) | written reports on file |

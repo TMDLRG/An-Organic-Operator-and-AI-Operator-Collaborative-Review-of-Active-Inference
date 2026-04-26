@@ -45,9 +45,11 @@ For every fix, the verification step must produce evidence accessible to a third
 
 This plan has:
 - **35 individual fix items** (Layer 1; 18 risk register + 17 subsidiary flags)
-- **8 Layer 2 gates** (require external human verification)
+- **8 Layer 2 gates** (require external human verification — **L2-6 SETTLED in Phase P5; 7 remaining**)
 - **3 cross-cutting infrastructure builds** (reproducibility repo, provenance map, environment pin)
-- **5 phases of execution** (with acceptance criteria for each)
+- **6 phases of execution** (P0–P5; P5 was the first Layer 2 settlement)
+
+**Phase P5 update (2026-04-26).** The original Maren PDF was supplied by the organic operator, allowing direct settlement of [Layer2_Inspection_Specs.md §6](Layer2_Inspection_Specs.md). All 14 prior error-register findings verified verbatim; A.1.a reversed (arXiv ID is real); E8 settled at 5/5 confidence with refined repair recommendation; E15 resolved as Minor; five new minor findings surfaced. See [Phase_P5_OODA.md](Phase_P5_OODA.md) for the full settlement worksheet.
 
 ---
 
@@ -302,13 +304,13 @@ Provenance is what gives any sentence its weight. The user's standard requires t
 
 ### 2.1 Source file renaming (A.1.a)
 
-**Observe.** Working-directory file `1906.08804v6.pdf.txt` does not correspond to arXiv submission 1906.08804.
+**Observe (Phase P1 — superseded by Phase P5).** ~~Working-directory file `1906.08804v6.pdf.txt` does not correspond to arXiv submission 1906.08804.~~ **REVERSED**: direct inspection of the original PDF in Phase P5 (2026-04-26) confirms the watermark `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` on page 1. The arXiv ID is real and the original filename was correct. See [Phase_P5_OODA.md §2](Phase_P5_OODA.md).
 
-**Orient.** Filenames are part of provenance. A misleading filename in the working directory will surface in any provenance map and will mislead any reviewer who notices.
+**Orient.** Filenames are part of provenance. ~~A misleading filename in the working directory will surface in any provenance map and will mislead any reviewer who notices.~~ The clean name `Maren_TR-2019-01v6.txt` is still useful as a human-readable alias, but the original arXiv-ID-bearing filename was always correct.
 
-**Decide.** Make the clean name `Maren_TR-2019-01v6.txt` available without breaking historical references.
+**Decide.** Make the clean name `Maren_TR-2019-01v6.txt` available alongside the original (not as a replacement) for the convenience of human readers browsing the working directory.
 
-**Act (Phase P1, executed).** `cp 1906.08804v6.pdf.txt Maren_TR-2019-01v6.txt` (copy not move; both files retained). Both files SHA-256 verified bit-identical at `b68b852985a5b16742a81e6de2bf161e239e6bd761dca5bae22de6160379dae1`. Active-corpus references (this Plan, the audit, the v2 manuscript at Phase P4, the memory file) updated to the clean name. Historical references in v1.md (1) and `Revision Research and Test Notes.txt` (95) intentionally left intact for continuity. Full documentation in [FILE_RENAMING_LOG.md](FILE_RENAMING_LOG.md).
+**Act (Phase P1, executed; rationale corrected in Phase P5).** `cp 1906.08804v6.pdf.txt Maren_TR-2019-01v6.txt` (copy not move; both files retained). Both files SHA-256 verified bit-identical at `b68b852985a5b16742a81e6de2bf161e239e6bd761dca5bae22de6160379dae1`. The clean-name alias is harmless and convenient; the rename's *rationale* (rather than its operation) was wrong, and has been corrected in [`FILE_RENAMING_LOG.md`](FILE_RENAMING_LOG.md). Active-corpus references in this Plan, the audit, v2 Appendix E.1, and the memory file use the clean name; historical references in v1.md and the Test Notes use the original.
 
 **Verify.** No file in the repo references the misleading name; all provenance entries point to the renamed file.
 
@@ -720,9 +722,9 @@ data do not require otherwise. SOURCE B (lines 1316–1317) labels these the
 
 Each risk register item from the audit's §H gets a full OODA-fix-acceptance pass.
 
-### H.1 — File-naming hygiene
+### H.1 — File-naming hygiene (REVERSED in Phase P5)
 
-Already addressed in §2.1 above. Status: planned. Layer 1.
+The H.1 risk's premise was wrong. Direct PDF inspection in Phase P5 confirms the arXiv ID is real (`arXiv:1906.08804v6 [cs.NE] 18 Aug 2024`). The filename was always correct. The Phase-P1 clean-name alias `Maren_TR-2019-01v6.txt` remains as a harmless convenience; both filenames resolve to identical content. See [Phase_P5_OODA.md §2](Phase_P5_OODA.md).
 
 ### H.2 — SOURCE C model identity
 
