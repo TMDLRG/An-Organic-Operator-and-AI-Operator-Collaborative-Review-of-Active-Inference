@@ -10,6 +10,12 @@ source_c_extracted.txt
 # Project-internal AI session instructions (not for public distribution)
 .claude/
 
+# Private interpersonal briefings / drafts not for public distribution
+Jim_Briefing_Document.md
+*_Briefing_Document.md
+Maren_Followup_Letter.md
+Maren_Readers_Package.md
+
 # Python caches and test artifacts
 __pycache__/
 *.py[cod]
