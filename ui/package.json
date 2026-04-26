@@ -1,0 +1,41 @@
+{
+  "name": "aoaiop-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "User interface for the An-Organic-Operator-and-AI-Operator Collaborative Review of Active Inference. Three surfaces: Document Viewer, Math Runner (Pyodide), Active Inference Agent Runner.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "14.2.18",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-markdown": "9.0.1",
+    "remark-gfm": "4.0.0",
+    "remark-math": "6.0.0",
+    "rehype-katex": "7.0.1",
+    "rehype-raw": "7.0.0",
+    "katex": "0.16.11",
+    "gray-matter": "4.0.3",
+    "fuse.js": "7.0.0",
+    "clsx": "2.1.1",
+    "tailwind-merge": "2.5.4",
+    "lucide-react": "0.460.0",
+    "recharts": "2.13.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.13",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "typescript": "5.6.3",
+    "tailwindcss": "3.4.14",
+    "postcss": "8.4.47",
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.18"
+  }
+}
