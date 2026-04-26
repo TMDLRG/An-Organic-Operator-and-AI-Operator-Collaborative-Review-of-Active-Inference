@@ -1,0 +1,61 @@
+# Continuous-integration workflow for the v2 audit test suite.
+#
+# This workflow runs on every push and pull request, on a 3-OS x 3-Python
+# matrix (9 cells). Each cell:
+#   1. checks out the repo
+#   2. sets up Python at the matrix version
+#   3. installs numpy and pytest from requirements.txt
+#   4. runs audit_tests_v2.py and diffs against reference_output.txt
+#      (acceptance: zero diff, i.e. bit-identical output)
+#   5. runs the pytest harness (acceptance: all tests green)
+#
+# Failure of any cell indicates a reproducibility regression that must be
+# investigated before any release. Acceptance for v2 release is 9-of-9 green.
+
+name: reproducibility-tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run audit_tests_v2.py and diff against reference_output.txt
+        shell: bash
+        run: |
+          python audit_tests_v2.py > out.txt
+          diff out.txt reference_output.txt
+          echo "BIT-IDENTICAL OUTPUT: PASS"
+
+      - name: Run pytest harness
+        run: pytest tests/ -v
+
+      - name: Run audit_tests_v2.py once more to verify determinism
+        shell: bash
+        run: |
+          python audit_tests_v2.py > out2.txt
+          diff out.txt out2.txt
+          echo "DETERMINISM: PASS"

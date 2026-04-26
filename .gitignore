@@ -1,0 +1,52 @@
+# Source corpus files (copyright; not redistributed in this repo)
+# These are inspected for the audit but not redistributed; readers should
+# obtain them from the original publishers.
+1906.08804v6.pdf.txt
+Maren_TR-2019-01v6.txt
+book_9780262369978*
+Ai Onna GPT5.4 Pro.docx
+source_c_extracted.txt
+
+# Project-internal AI session instructions (not for public distribution)
+.claude/
+
+# Python caches and test artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Temp files
+*.tmp
+*.bak
+*~
+
+# Local CI / regression scratch
+out.txt
+out1.txt
+out2.txt
+out_local.txt
