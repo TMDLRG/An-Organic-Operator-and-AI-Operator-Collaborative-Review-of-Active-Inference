@@ -153,6 +153,8 @@ This names individuals as suggested reviewers without explicit "no commitment" h
 
 **Acceptance.** v2 references the clean name; reader understands the rename and its rationale.
 
+**⚠ P5 update (2026-04-26).** This patch's text was further refined in Phase P5 to *reverse* the original "misleading filename" claim. Direct inspection of the original PDF on 2026-04-26 confirmed the watermark `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` on page 1 — the arXiv ID is real and the original filename was always correct. The clean-name alias `Maren_TR-2019-01v6.txt` remains as a harmless human-readable convenience. The applied v2 Appendix E.1 text now includes the corrected provenance plus the arXiv watermark citation. See [`Phase_P5_OODA.md`](Phase_P5_OODA.md) §2 and the corrected [`FILE_RENAMING_LOG.md`](FILE_RENAMING_LOG.md). The patch operation itself stands; only the rationale was wrong.
+
 ---
 
 ## Patch P-9 — Two-session AI provenance disclosure (Plan §4.1, G.1)
@@ -509,6 +511,25 @@ This names individuals as suggested reviewers without explicit "no commitment" h
 | P-27 | Appendix D before table | §5, H.9 | insert | 1 |
 
 **Total: 27 patches.** All Layer 1. Application is mechanical.
+
+---
+
+## P5 update — Layer 2 §6 settled (2026-04-26)
+
+After Phase P4 (v2 production) completed, the organic operator supplied the original Maren PDF on 2026-04-26. Direct inspection of pages 1, 6, 15-22, 29-46, 50-58 produced the master settlement document [`Phase_P5_OODA.md`](Phase_P5_OODA.md) and three new commits:
+
+- **commit `92dcd81`** — Phase P5 OODA worksheet + critical reversals (A.1.a; E8 settlement) propagated to v2 manuscript, audit, FILE_RENAMING_LOG
+- **commit `7c0b411`** — Plan + Layer 2 specs + Provenance Map updates (20 new rows)
+- **commit `(next)`** — this commit; v2_patches.md backfill
+
+**Patches affected by Phase P5 (per the inline notes added above):**
+
+- **P-8** (file rename): rationale REVERSED — the arXiv ID was real; the patch operation stands as a harmless human-readable alias
+- **P-26** (E8 acceptance gate): SETTLED — confidence 5/5; refined repair recommendation
+- **P-7** (SOURCE C model identity): no change required from P5 — the audit-of-audit didn't surface new identity information about SOURCE C
+- All other patches (P-1 through P-25, P-27): unaffected by P5 directly, though their underlying audit findings (E1–E14) are now PDF-verified verbatim per Provenance_Map rows P-128 to P-139
+
+**Layer 2 gates remaining** (per [Layer2_Inspection_Specs.md](Layer2_Inspection_Specs.md)): L2-1 (Beal 2003), L2-2 (Friston 2013 NESS), L2-3 (Friston 2015), L2-4 (Sengupta-Stemmler-Friston 2013), L2-5 (Kikuchi & Brush 1967), L2-7 (Blei et al. 2017), L2-8 (two qualified human expert reviewers). All require external resources Claude cannot acquire.
 
 ---
 
