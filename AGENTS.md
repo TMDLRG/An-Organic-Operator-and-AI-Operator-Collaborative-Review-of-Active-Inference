@@ -20,10 +20,18 @@ Jido aligns with the mathematical architecture of this project:
 
 ---
 
-## Submodule Location
+## Where Jido Lives In This Repo
 
 ```
-jido/          ← git submodule: https://github.com/agentjido/jido.git
+jido/                  ← upstream git submodule (v2.2.0)
+                         https://github.com/agentjido/jido.git
+                         The canonical source of truth — Elixir code,
+                         tests, guides/, AGENTS.md, usage-rules.md.
+
+knowledgebase/jido/    ← curated, condensed reference for the framework.
+                         27 topic files + MASTER-INDEX. Faster to read
+                         than the upstream guides; cross-linked back to
+                         jido/ for code-level details.
 ```
 
 After cloning this repository, initialize the submodule:
@@ -31,6 +39,87 @@ After cloning this repository, initialize the submodule:
 ```bash
 git submodule update --init --recursive
 ```
+
+---
+
+## Required Reading Order (before writing any agent code)
+
+LLM agents and human contributors must follow this order. Do not skip it. The knowledgebase is the fast path; the submodule is the authority.
+
+1. **[`knowledgebase/jido/MASTER-INDEX.md`](knowledgebase/jido/MASTER-INDEX.md)** — navigation hub, ecosystem table, decision tree for "which runtime pattern do I need."
+2. **[`knowledgebase/jido/00-philosophy.md`](knowledgebase/jido/00-philosophy.md)** — invariants, the `cmd/2` contract, what NOT to do. Non-negotiable.
+3. **[`knowledgebase/jido/25-cheatsheet.md`](knowledgebase/jido/25-cheatsheet.md)** — common code patterns; tells you which module to reach for.
+4. The specific topic file(s) for what you are building (see table below).
+5. **Only then**, open the upstream submodule at [`jido/`](jido/) for code-level edge cases, signatures, or behavior the knowledgebase does not cover. Treat `jido/lib/` as authoritative when the two disagree, and flag the drift.
+
+---
+
+## Knowledgebase Topic Map
+
+Use this map to jump directly to the right file when you know what you are building. All paths are under `knowledgebase/jido/`.
+
+### Core model
+
+| If you need to... | Read |
+|---|---|
+| Define an agent (`use Jido.Agent`, schemas, `cmd/2`, hooks) | [`01-agents.md`](knowledgebase/jido/01-agents.md) |
+| Define an action (`use Jido.Action`, `run/2`) | [`02-actions.md`](knowledgebase/jido/02-actions.md) |
+| Send/receive signals between agents | [`03-signals.md`](knowledgebase/jido/03-signals.md) |
+| Emit effects (`Emit`, `SpawnAgent`, `Schedule`, `Cron`, `RunInstruction`) | [`04-directives.md`](knowledgebase/jido/04-directives.md) |
+| Mutate agent state (`SetState`, `ReplaceState`, `SetPath`, etc.) | [`05-state-ops.md`](knowledgebase/jido/05-state-ops.md) |
+
+### Runtime
+
+| If you need to... | Read |
+|---|---|
+| Run a live agent (`use Jido`, `AgentServer`, `call/cast`) | [`06-runtime.md`](knowledgebase/jido/06-runtime.md) |
+| Pick a strategy (`Direct`, `FSM`, custom) | [`07-strategies.md`](knowledgebase/jido/07-strategies.md) |
+| Add a plugin (Identity / Thread / Memory or custom) | [`08-plugins.md`](knowledgebase/jido/08-plugins.md) |
+| Add a sensor (`Jido.Sensor`, ingress directives) | [`09-sensors.md`](knowledgebase/jido/09-sensors.md) |
+
+### Persistence & topology
+
+| If you need to... | Read |
+|---|---|
+| Persist agent state, hibernate/thaw, journal | [`10-persistence.md`](knowledgebase/jido/10-persistence.md) |
+| Compose multi-agent topologies (`Jido.Pod`, `ensure_node/3`) | [`11-pods.md`](knowledgebase/jido/11-pods.md) |
+| Add multi-tenancy (`partition:`) | [`12-multi-tenancy.md`](knowledgebase/jido/12-multi-tenancy.md) |
+
+### Coordination
+
+| If you need to... | Read |
+|---|---|
+| Orchestrate fan-out, parent/child, aggregation | [`13-orchestration.md`](knowledgebase/jido/13-orchestration.md) |
+| Handle orphan/adoption lifecycle | [`14-orphans-adoption.md`](knowledgebase/jido/14-orphans-adoption.md) |
+| Schedule work (declarative `schedules:`, dynamic `Cron`) | [`15-scheduling.md`](knowledgebase/jido/15-scheduling.md) |
+| Pool workers for throughput | [`16-worker-pools.md`](knowledgebase/jido/16-worker-pools.md) |
+
+### Operations
+
+| If you need to... | Read |
+|---|---|
+| Add telemetry, spans, tracers, metrics | [`17-observability.md`](knowledgebase/jido/17-observability.md) |
+| Debug a misbehaving agent | [`18-debugging.md`](knowledgebase/jido/18-debugging.md) |
+| Handle errors (`Jido.Error.*`, `Directive.Error`) | [`19-errors.md`](knowledgebase/jido/19-errors.md) |
+| Write tests (`JidoTest.Case`, `Jido.await/2`, `mimic`) | [`20-testing.md`](knowledgebase/jido/20-testing.md) |
+| Configure instances, supervision tree, env overrides | [`21-configuration.md`](knowledgebase/jido/21-configuration.md) |
+| Discover registered agents/actions/signals | [`22-discovery.md`](knowledgebase/jido/22-discovery.md) |
+
+### Integration & migration
+
+| If you need to... | Read |
+|---|---|
+| Integrate with Phoenix/LiveView, Ash, PubSub | [`23-integrations.md`](knowledgebase/jido/23-integrations.md) |
+| Upgrade from Jido 1.x | [`24-migration-1-to-2.md`](knowledgebase/jido/24-migration-1-to-2.md) |
+
+---
+
+## Knowledgebase Authority Rules
+
+- The knowledgebase is **derived reference**, not a substitute for the upstream submodule. When in doubt, the answer is in [`jido/lib/`](jido/lib/) or [`jido/test/`](jido/test/), not in the topic file.
+- The knowledgebase tracks Jido **v2.2.0**. If the submodule is updated to a newer version, treat the knowledgebase as `:uncertain` until refreshed.
+- Cite both when justifying a design choice: knowledgebase file for the pattern, upstream file for the source.
+- **Never** generate Jido code from memory or general LLM knowledge of "Elixir agent frameworks." Open the topic file. Open the upstream module. Read the actual function signatures.
 
 ---
 

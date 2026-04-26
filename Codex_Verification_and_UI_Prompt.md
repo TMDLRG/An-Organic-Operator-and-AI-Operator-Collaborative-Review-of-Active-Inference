@@ -195,10 +195,20 @@ An interactive exploration of the 11 numerical demonstrations in `manuscript-v2-
 
 ### Surface C — Active Inference Agent Runner
 
-This surface uses the **JIDO SDK and source code that the operator will supply**. JIDO is the agent framework chosen by the operator. **Wait for the operator to provide JIDO before scaffolding this surface.** Once supplied:
+This surface uses **Jido** — an Elixir-based autonomous-agent framework (v2.2.0) that the operator has mandated for all agent work in this repo. The mandate, the active-inference-↔-Jido conceptual mapping, and the binding usage rules are in [`AGENTS.md`](AGENTS.md). **Read AGENTS.md first.** Then:
 
-1. Read the JIDO SDK documentation and source code completely. Do not skim.
-2. Implement at least **two** active-inference agents using JIDO's primitives:
+1. Read the curated knowledgebase at [`knowledgebase/jido/`](knowledgebase/jido/), in this order: `MASTER-INDEX.md` → `00-philosophy.md` (invariants; non-negotiable) → `25-cheatsheet.md` (common patterns) → topic files for what you need to build (the topic map is in `AGENTS.md`).
+2. The upstream Jido source-of-truth is referenced as a git submodule at `jido/` (https://github.com/agentjido/jido.git); if it is present after `git submodule update --init --recursive`, treat `jido/lib/` and `jido/test/` as authoritative when the knowledgebase and source disagree. If the submodule is not yet initialized in your clone, the knowledgebase is sufficient for the agent scope below.
+3. **Hard constraints (from AGENTS.md)** — these are non-negotiable:
+   - Pure `cmd/2` contract: same input must produce same `{agent, directives}` output; no side effects, no I/O, no randomness inside `cmd/2`.
+   - Directives describe effects; they do not mutate state directly.
+   - Zoi-first schemas for all agent, plugin, signal, and directive contracts.
+   - Cross-agent communication uses signals (`Jido.Signal`), not direct process messages.
+   - Test pure `cmd/2` logic first; add `AgentServer` integration tests second.
+   - Run `mix q` (format, compile, credo, dialyzer) before any commit that touches agent code.
+   - Forbidden: agent loops outside `use Jido.Agent`; LLM API calls inside `cmd/2`; `Process.sleep/1` in agent tests; ad-hoc `GenServer` calls instead of `Jido.AgentServer`; bypassing Markov blanket boundaries.
+4. **Elixir / OTP requirements**: Elixir `~> 1.18`, OTP `27+`.
+5. Implement at least **two** active-inference agents using Jido's primitives:
    - **Agent A — Discrete two-state agent**: takes the toy model from Test 1 (binary $\eta$, binary $y$ observation), updates beliefs by perceptual inference (variational free energy minimization), and selects actions to drive the model's surprisal lower over time. Display in real-time: agent's belief $q(\eta)$, observation history, action history, $F[q]$ trajectory.
    - **Agent B — Continuous Gaussian agent**: takes the Test 4 conjugate Gaussian setup, agent maintains a Gaussian variational posterior, observes $y$ values, updates the posterior via gradient descent on $F[q]$, and emits actions to influence the next observation. Display: posterior $\mu, \sigma$ trajectories; $F[q]$ vs. log-evidence ELBO; active-inference loop animation.
 3. **Run modes**:
@@ -212,7 +222,7 @@ This surface uses the **JIDO SDK and source code that the operator will supply**
    - Generative-process state vs. generative-model belief as overlay (so the model-vs-process distinction is visible — this is one of the manuscript's central pedagogical points; the UI should make it visible).
 5. **Save / load**: agents and their state saveable to JSON; loadable back into the runner.
 
-If JIDO is not Elixir/Phoenix-based but uses a different stack, scaffold accordingly. Do not assume the stack until you read the JIDO docs.
+Jido is Elixir/OTP/BEAM, with Phoenix integration documented in `knowledgebase/jido/23-integrations.md`. The active-inference ↔ Jido conceptual mapping in `AGENTS.md` is the canonical one — use it. Do not import any other agent framework (LangChain, AutoGen, CrewAI, custom ad-hoc loops); per `AGENTS.md`, those are explicitly forbidden in this repo for new agent work.
 
 ## Tech-stack guidance (you decide)
 
@@ -221,7 +231,7 @@ Choose a stack that meets the bar. Recommendations to consider:
 - **Frontend**: Next.js 14+ App Router with TypeScript, Tailwind CSS, shadcn/ui, KaTeX for math, Zustand or Jotai for state, Tanstack Query for data.
 - **Document/Markdown rendering**: react-markdown + remark-math + rehype-katex; for cross-refs, a remark plugin that resolves repo-relative links to in-app navigation events.
 - **Math runner backend**: a thin Python FastAPI (or Bun/Deno-native, if you avoid Python) wrapping `audit_tests_v2.py` and the per-test functions. Or compile the tests to WebAssembly via Pyodide and run client-side — this would make the demo zero-server and embeddable on Vercel.
-- **Agent runner backend**: depends on what JIDO is. If JIDO is Elixir/Phoenix, run Phoenix in a separate process and bridge via WebSocket / Phoenix Channels. If JIDO is Python or TypeScript, integrate directly.
+- **Agent runner backend**: Jido is Elixir/OTP/BEAM. Run a Phoenix application in a separate process (under a supervised OTP runtime, per Jido's `AgentServer` pattern); bridge to the Next.js frontend via WebSocket / Phoenix Channels. The agent code itself goes in `ui/apps/agents/` as an Elixir umbrella application.
 - **Plots**: Plotly, ECharts, or Visx — your pick. Whatever lets you do live-updating with reasonable performance.
 - **Search**: MiniSearch or Lunr for client-side; FlexSearch if you need more advanced features.
 - **Hosting**: Vercel or Fly.io for the Next.js app; agent backend can be on Fly.io if Elixir/Phoenix.
@@ -309,7 +319,7 @@ When in doubt, do the following in this order:
 
 1. The repository URL (already in the prompt) or a fresh clone if Codex prefers.
 2. The original Maren PDF (`1906.08804v6.pdf`) so Codex can perform the Phase-1.3 PDF-direct cross-checks.
-3. The JIDO SDK / source code (operator-supplied; reference says you'll provide).
+3. ~~The JIDO SDK / source code~~ — **already in the repo** as of commit `261d7a2`. Curated reference at `knowledgebase/jido/` (27 markdown files); upstream submodule reference and binding rules at `AGENTS.md`. Codex should run `git submodule update --init --recursive` after cloning to pull the upstream `jido/` source if it has been added; otherwise the knowledgebase is sufficient for the agent scope.
 4. Any deployment credentials Codex needs (Vercel token, Fly.io token, GitHub PAT for the eventual UI commits).
 5. (Optional) A list of existing UI design preferences you have — specific colors, fonts, branding — if you want a particular look. Otherwise Codex chooses.
 
