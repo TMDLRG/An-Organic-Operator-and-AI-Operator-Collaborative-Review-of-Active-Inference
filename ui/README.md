@@ -2,6 +2,9 @@
 
 User interface for the **An-Organic-Operator-and-AI-Operator Collaborative Review of Active Inference**.
 
+**Live deployment:** https://active-inference-collaborative-review.vercel.app
+**Vercel project:** `active-inference-collaborative-review` (team: `michael-polzins-projects`)
+
 Three surfaces in one Next.js 14 app:
 
 - **Surface A — Documents.** Read every Markdown / CSV / source file in the repo with full KaTeX math rendering, cross-references, and dark mode.

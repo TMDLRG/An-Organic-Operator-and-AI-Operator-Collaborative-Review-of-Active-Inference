@@ -1,5 +1,6 @@
 # An Organic Operator and AI Operator Collaborative Review of Active Inference Free Energy Minimization
 
+**Live UI:** https://active-inference-collaborative-review.vercel.app — interactive document viewer, audit register, math runner (all 11 tests), and active inference agents.
 **Manuscript:** [`Manuscript_Draft_v2.md`](Manuscript_Draft_v2.md) (1,137 lines)
 **Status:** v2 draft. Layer 1 (AI-executable) of the [Audit Remediation Plan](Audit_Remediation_Plan.md) is complete. Layer 2 (human expert review) gates remain pending.
 **Authors:** Michael Polzin (organic operator) with AI co-contributors:
