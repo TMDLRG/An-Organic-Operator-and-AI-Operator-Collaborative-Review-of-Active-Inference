@@ -9,7 +9,12 @@ import type { AuditFinding, Severity } from "./audit-types";
 export type { AuditFinding, Severity } from "./audit-types";
 export { severityColor } from "./audit-types";
 
-const REPO_ROOT = path.resolve(process.cwd(), "..");
+function resolveRepoRoot(): string {
+  const snapshot = path.resolve(process.cwd(), "repo-snapshot");
+  if (fs.existsSync(snapshot)) return snapshot;
+  return path.resolve(process.cwd(), "..");
+}
+const REPO_ROOT = resolveRepoRoot();
 
 let cache: { findings: AuditFinding[]; phase5Notes: string } | null = null;
 

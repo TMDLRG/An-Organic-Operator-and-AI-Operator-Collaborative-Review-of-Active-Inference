@@ -5,6 +5,8 @@
   "description": "User interface for the An-Organic-Operator-and-AI-Operator Collaborative Review of Active Inference. Three surfaces: Document Viewer, Math Runner (Pyodide), Active Inference Agent Runner.",
   "scripts": {
     "dev": "next dev",
+    "snapshot-docs": "node scripts/snapshot-docs.mjs",
+    "prebuild": "node scripts/snapshot-docs.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

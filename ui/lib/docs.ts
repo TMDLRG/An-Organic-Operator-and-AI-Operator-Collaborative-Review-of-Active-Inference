@@ -3,7 +3,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const REPO_ROOT = path.resolve(process.cwd(), "..");
+// Resolution order:
+//   1. ./repo-snapshot/   — built by scripts/snapshot-docs.mjs (Vercel + prod)
+//   2. ../                 — local dev (the parent repo on disk)
+function resolveRepoRoot(): string {
+  const snapshot = path.resolve(process.cwd(), "repo-snapshot");
+  if (fs.existsSync(snapshot)) return snapshot;
+  return path.resolve(process.cwd(), "..");
+}
+const REPO_ROOT = resolveRepoRoot();
 
 const ALLOWED_EXT = new Set([".md", ".csv", ".cff", ".yml", ".yaml", ".json", ".py", ".txt", ".tsx", ".ts", ".js"]);
 const DENY_DIRS = new Set([
