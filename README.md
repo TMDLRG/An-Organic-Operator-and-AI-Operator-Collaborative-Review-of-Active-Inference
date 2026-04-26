@@ -1,6 +1,10 @@
 # An Organic Operator and AI Operator Collaborative Review of Active Inference Free Energy Minimization
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19785799.svg)](https://doi.org/10.5281/zenodo.19785799)
+
 **Live UI:** https://active-inference-collaborative-review.vercel.app — interactive document viewer, audit register, math runner (all 11 tests), and active inference agents.
+**Zenodo record:** https://zenodo.org/records/19785799 (v0.1.0, archived 2026-04-26, MIT)
+**Walkthrough video** (unlisted): https://www.youtube.com/watch?v=sC7ED88Y0Ak (~12 min)
 **Manuscript:** [`Manuscript_Draft_v2.md`](Manuscript_Draft_v2.md) (1,137 lines)
 **Status:** v2 draft. Layer 1 (AI-executable) of the [Audit Remediation Plan](Audit_Remediation_Plan.md) is complete. Layer 2 (human expert review) gates remain pending.
 **Authors:** Michael Polzin (organic operator) with AI co-contributors:
