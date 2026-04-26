@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation";
+import dynamicImport from "next/dynamic";
 import { readDoc } from "@/lib/docs";
-import { Markdown } from "@/components/doc-viewer/markdown";
-import { CsvTable } from "@/components/doc-viewer/csv-table";
+
+// Dynamic-import the heavy renderers to keep the route's First Load JS
+// under control. Markdown brings in react-markdown + KaTeX (~200 kB);
+// CsvTable is small but the table can be huge.
+const Markdown = dynamicImport(() => import("@/components/doc-viewer/markdown").then((m) => m.Markdown), { ssr: true });
+const CsvTable = dynamicImport(() => import("@/components/doc-viewer/csv-table").then((m) => m.CsvTable), { ssr: false });
 
 export const dynamic = "force-dynamic";
 

@@ -2,14 +2,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
-import { BookOpen, Sigma, Bot, Home } from "lucide-react";
+import { BookOpen, Sigma, Bot, Home, ShieldAlert, Search as SearchIcon } from "lucide-react";
 import clsx from "clsx";
 
 const tabs = [
   { href: "/",       label: "Home",      icon: Home },
   { href: "/docs",   label: "Documents", icon: BookOpen },
+  { href: "/audit",  label: "Audit",     icon: ShieldAlert },
   { href: "/math",   label: "Math",      icon: Sigma },
   { href: "/agents", label: "Agents",    icon: Bot },
+  { href: "/search", label: "Search",    icon: SearchIcon },
 ];
 
 export function Nav() {

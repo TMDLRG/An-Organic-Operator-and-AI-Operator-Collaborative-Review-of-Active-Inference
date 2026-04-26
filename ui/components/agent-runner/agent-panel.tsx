@@ -6,7 +6,7 @@ import {
   mulberry32, type DiscreteState, type GaussianState,
 } from "@/lib/agents";
 import { LinePlot } from "@/components/math-runner/plot";
-import { Play, Pause, RotateCcw, StepForward } from "lucide-react";
+import { Play, Pause, RotateCcw, StepForward, Download, Upload } from "lucide-react";
 
 const COLOR_BELIEF = "rgb(56 189 248)";
 const COLOR_TRUE = "rgb(244 114 182)";
@@ -27,6 +27,31 @@ function Btn({ onClick, children, kind = "default" }: { onClick: () => void; chi
       {children}
     </button>
   );
+}
+
+function downloadJSON(filename: string, payload: unknown) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+}
+
+function loadJSONFile<T>(onLoad: (data: T) => void, onError?: (msg: string) => void) {
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "application/json,.json";
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { onLoad(JSON.parse(String(reader.result)) as T); }
+      catch (e) { onError?.(`Could not parse JSON: ${(e as Error).message}`); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
 
 export function DiscreteAgentPanel() {
@@ -67,6 +92,30 @@ export function DiscreteAgentPanel() {
     step: h.step, belief: h.qEta1, F: h.F, obs: h.obs, action: h.action,
   }));
 
+  function save() {
+    downloadJSON(
+      `agent-discrete-step${state.step}-seed${seed}.json`,
+      { type: "discrete", seed, trueEta, state, savedAt: new Date().toISOString() }
+    );
+  }
+  function load() {
+    loadJSONFile<{ type?: string; seed?: number; trueEta?: 0 | 1; state?: DiscreteState }>(
+      (data) => {
+        if (data?.type !== "discrete" || !data.state) {
+          alert("Not a discrete-agent session file.");
+          return;
+        }
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        rngRef.current = mulberry32(data.seed ?? seed);
+        setState(data.state);
+        setTrueEta((data.trueEta ?? 1) as 0 | 1);
+        setSeed(data.seed ?? seed);
+        setRunning(false);
+      },
+      (msg) => alert(msg)
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 flex-wrap">
@@ -76,6 +125,8 @@ export function DiscreteAgentPanel() {
         </Btn>
         <Btn onClick={step}><StepForward className="w-4 h-4" /> Step</Btn>
         <Btn onClick={() => reset()}><RotateCcw className="w-4 h-4" /> Reset</Btn>
+        <Btn onClick={save}><Download className="w-4 h-4" /> Save</Btn>
+        <Btn onClick={load}><Upload className="w-4 h-4" /> Load</Btn>
         <div className="ml-2 text-sm flex items-center gap-2">
           <span className="text-muted">seed</span>
           <input
@@ -168,6 +219,30 @@ export function GaussianAgentPanel() {
     step: h.step, mq: h.mq, sigma: Math.sqrt(h.vq), F: h.F, obs: h.obs,
   }));
 
+  function save() {
+    downloadJSON(
+      `agent-gaussian-step${state.step}-seed${seed}.json`,
+      { type: "gaussian", seed, trueEta, state, savedAt: new Date().toISOString() }
+    );
+  }
+  function load() {
+    loadJSONFile<{ type?: string; seed?: number; trueEta?: number; state?: GaussianState }>(
+      (data) => {
+        if (data?.type !== "gaussian" || !data.state) {
+          alert("Not a gaussian-agent session file.");
+          return;
+        }
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        rngRef.current = mulberry32(data.seed ?? seed);
+        setState(data.state);
+        setTrueEta(data.trueEta ?? 1.5);
+        setSeed(data.seed ?? seed);
+        setRunning(false);
+      },
+      (msg) => alert(msg)
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 flex-wrap">
@@ -177,6 +252,8 @@ export function GaussianAgentPanel() {
         </Btn>
         <Btn onClick={step}><StepForward className="w-4 h-4" /> Step</Btn>
         <Btn onClick={() => reset()}><RotateCcw className="w-4 h-4" /> Reset</Btn>
+        <Btn onClick={save}><Download className="w-4 h-4" /> Save</Btn>
+        <Btn onClick={load}><Upload className="w-4 h-4" /> Load</Btn>
         <div className="ml-2 text-sm flex items-center gap-2">
           <span className="text-muted">seed</span>
           <input

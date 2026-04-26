@@ -8,3 +8,8 @@ out/
 next-env.d.ts.bak
 .vercel/
 .turbo/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
