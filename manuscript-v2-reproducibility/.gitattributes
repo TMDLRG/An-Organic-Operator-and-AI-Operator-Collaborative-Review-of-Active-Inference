@@ -1,0 +1,5 @@
+# Reproducibility: enforce LF on all files so reference_output.txt and test
+# scripts are checked out with Unix line endings on every platform.  This
+# prevents CRLF/LF drift that would break `diff out.txt reference_output.txt`
+# inside Docker (Linux) after a Windows checkout.
+* text=auto eol=lf

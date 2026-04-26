@@ -337,4 +337,46 @@ When in doubt, do the following in this order:
 
 ### Canonical commit hash at time of writing this prompt
 
-Latest commit on `main`: `4adc6b5` (P-26 backfill). Codex should clone at or after this commit. If Codex's verification finds issues, that should be reflected against this hash so the audit record is preserved.
+Latest commit on `main` when this prompt was first created: `4adc6b5` (P-26 backfill).
+
+---
+
+## HANDOFF STATE — Updated 2026-04-26 after Claude Code remediation
+
+**Phase 1 gates 1.1 and 1.2 have been independently run by Claude Code and pass.**
+When you (GPT Codex) clone the repo at the current `main` HEAD, you should expect:
+
+### What was fixed (see `Codex_Phase1_Verification_Report.md` for details)
+
+| # | Fix | Root cause | Commit |
+|---|-----|-----------|--------|
+| 1 | `audit_tests_v2.py` — removed dead numpy import + conditional footer | Platform-dependent stdout on Python 3.11/3.13 when numpy absent | (current HEAD) |
+| 2 | `audit_tests_v2.py` — added `sys.stdout.reconfigure(newline='\n')` | CRLF/LF mismatch: Windows CRLF vs. Docker Linux LF caused every line to differ | (current HEAD) |
+| 3 | `reference_output.txt` — regenerated with LF endings | Was committed from Windows with CRLF | (current HEAD) |
+| 4 | `manuscript-v2-reproducibility/.gitattributes` — added `* text=auto eol=lf` | Prevents future CRLF re-contamination on Windows checkout | (current HEAD) |
+| 5 | `CITATION.cff` — added `authors` to ORCHESTRATE reference; removed `affiliation` from entity-type author entries | CFF 1.2.0 schema: `references` items require `authors`; entity items do not support `affiliation` | (current HEAD) |
+
+### Verified passing (as of current HEAD)
+
+- ✅ `diff out.txt reference_output.txt` → zero output (Windows Python 3.12, locally)
+- ✅ Docker build succeeds (`aoaiop-tests:latest`)
+- ✅ `docker run --rm aoaiop-tests` → `ALL TESTS PASS BIT-IDENTICALLY`
+- ✅ `docker run --rm aoaiop-tests pytest tests/ -v` → `87 passed in 0.18s`
+- ✅ `cffconvert --validate -i CITATION.cff` → `Citation metadata are valid according to schema version 1.2.0.`
+
+### What you still need to run (Phase 1.2 multi-version confirmation)
+
+The fixes resolve the 3.11/3.13 failures. You should re-confirm:
+- `diff out.txt reference_output.txt` on **Python 3.11** and **3.13** (should now pass because Python forces LF via `sys.stdout.reconfigure`).
+
+### Phase 1.3–1.5 status
+
+Not yet executed. These require the original Maren PDF and a manual 20-row provenance sample. Execute them as specified in the prompt before beginning Phase 2.
+
+### Phase 2 gate status
+
+**Phase 2 may begin** once you have confirmed Phase 1.3–1.5 pass (or are documented as non-blocking in your environment). The critical Phase 1.2 gates are all green.
+
+### Current `main` HEAD
+
+Run `git log --oneline -3` after cloning to confirm you are at or after the remediation commits (they follow `a7f90fb` which was the original Codex Phase 1 verification report commit).

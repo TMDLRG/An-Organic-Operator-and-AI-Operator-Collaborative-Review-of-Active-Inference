@@ -42,11 +42,10 @@ Author.
 import math
 import sys
 
-try:
-    import numpy as np
-    HAVE_NUMPY = True
-except ImportError:
-    HAVE_NUMPY = False
+# Force LF line endings on all platforms so output is bit-identical
+# regardless of OS (Windows CRLF vs Linux/macOS LF).
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(newline='\n')
 
 # -----------------------------------------------------------------------------
 # Helpers used across tests
@@ -646,6 +645,3 @@ print("All values are bit-identical across IEEE 754 double-precision platforms."
 print("Compare to reference_output.txt with: diff <(python audit_tests_v2.py) reference_output.txt")
 print()
 
-if not HAVE_NUMPY:
-    print("Note: numpy was not imported in this run; all tests used pure math/scalar ops.")
-    print("      numpy is listed in requirements.txt for tests/ pytest harness only.")

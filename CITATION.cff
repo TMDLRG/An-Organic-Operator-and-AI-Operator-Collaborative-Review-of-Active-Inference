@@ -21,13 +21,10 @@ authors:
     email: mpolzin@zimzap.com
     affiliation: TMDLRG
   - name: "Anthropic Claude (Opus 4.7)"
-    affiliation: Anthropic
     website: "https://www.anthropic.com"
   - name: "OpenAI GPT, via the Ai Onna Custom GPT (built on the ORCHESTRATE Method)"
-    affiliation: OpenAI
     website: "https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6"
   - name: "OpenAI GPT, via the Jules Custom GPT (built on the ORCHESTRATE Method)"
-    affiliation: OpenAI
     website: "https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6"
 type: software
 repository-code: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
@@ -53,6 +50,8 @@ identifiers:
 references:
   - type: book
     title: "ORCHESTRATE — Prompting for Professional AI Outputs"
+    authors:
+      - name: "Ai Onna / Jules Custom GPTs (OpenAI GPT, built on the ORCHESTRATE Method)"
     url: "https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6"
     notes: >-
       The prompting framework underlying both the "Ai Onna" Custom GPT
@@ -98,11 +97,8 @@ preferred-citation:
       given-names: Michael
       affiliation: TMDLRG
     - name: "Anthropic Claude (Opus 4.7)"
-      affiliation: Anthropic
     - name: "OpenAI GPT, via the Ai Onna Custom GPT (built on the ORCHESTRATE Method)"
-      affiliation: OpenAI
     - name: "OpenAI GPT, via the Jules Custom GPT (built on the ORCHESTRATE Method)"
-      affiliation: OpenAI
   year: 2026
   url: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
   version: "v2-draft-2026-04-26"
