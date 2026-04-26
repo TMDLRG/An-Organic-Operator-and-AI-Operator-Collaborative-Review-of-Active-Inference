@@ -20,6 +20,7 @@ const DENY_DIRS = new Set([
   "ui", "node_modules", ".git", ".github", ".claude", ".next",
   "knowledgebase", "venv", ".venv", "__pycache__", ".pytest_cache",
   "memory", "test-results", "playwright-report", "out",
+  "repo-snapshot", "path0", ".vercel",
 ]);
 const DENY_FILES = new Set([
   "1906.08804v6.pdf",
@@ -63,6 +64,17 @@ function copyTree(srcRoot, destRoot) {
 
 console.log(`[snapshot-docs] source: ${REPO_ROOT}`);
 console.log(`[snapshot-docs] target: ${SNAPSHOT_DIR}`);
+
+// Sanity check: only regenerate if the source clearly contains the
+// canonical repo files. On Vercel (when only ui/ was uploaded) the
+// "parent" is empty and we'd produce a useless snapshot — better to
+// leave the committed snapshot intact.
+const SENTINEL = path.join(REPO_ROOT, "Manuscript_Draft_v2.md");
+if (!fs.existsSync(SENTINEL)) {
+  console.log(`[snapshot-docs] skip: sentinel ${SENTINEL} not found.`);
+  console.log(`[snapshot-docs] using committed snapshot at ${SNAPSHOT_DIR} instead.`);
+  process.exit(0);
+}
 
 if (fs.existsSync(SNAPSHOT_DIR)) {
   fs.rmSync(SNAPSHOT_DIR, { recursive: true, force: true });

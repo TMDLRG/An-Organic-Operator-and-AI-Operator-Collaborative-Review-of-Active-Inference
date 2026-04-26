@@ -1,0 +1,17 @@
+# Reproducibility test suite dependencies for Manuscript v2.
+#
+# The main test script (audit_tests_v2.py) uses ONLY the Python standard
+# library (math, sys). It runs without any external dependency.
+#
+# numpy is required only for the pytest harness in tests/, which uses
+# numpy idioms in some assertions for clarity. Any numpy >= 1.26 works
+# (the API surface used is stable since 1.x).
+#
+# pytest is required only for running the per-test acceptance suite.
+#
+# Pin to known-good lower bounds; upper bounds are open to allow future
+# environments. The acceptance test (diff against reference_output.txt)
+# validates that future versions still produce bit-identical output.
+
+numpy>=1.26
+pytest>=7.0

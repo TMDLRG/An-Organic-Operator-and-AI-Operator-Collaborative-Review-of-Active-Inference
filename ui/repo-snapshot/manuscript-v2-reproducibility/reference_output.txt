@@ -1,0 +1,236 @@
+==============================================================================
+TEST 1
+  Discrete two-state model: identity and bound
+==============================================================================
+  p(y=1) = sum_eta p(y=1|eta) p(eta) = 0.6900000000
+  surprisal -ln p(y=1) = 0.3710636814 nats
+  exact posterior p(eta=1|y=1) = 0.9130434783
+
+  q(eta=1) | F_form1   | F_form2   | KL        | ELBO      | F=-ELBO?
+  ---------|-----------|-----------|-----------|-----------|---------
+  0.500000 | 0.944576  | 0.944576  | 0.573512  | -0.944576 | YES
+  0.913043 | 0.371064  | 0.371064  | -0.000000  | -0.371064 | YES
+  0.950000 | 0.381089  | 0.381089  | 0.010025  | -0.381089 | YES
+
+  Verdict: master identity (Form1 == Form2) holds; F[q] >= surprisal
+           with equality iff q = exact posterior. Class A (re-derivable).
+
+==============================================================================
+TEST 2
+  Bad approximate posterior: F tracks KL monotonically
+==============================================================================
+  q(eta=1) | F[q]      | KL(q || post) | F - surprisal
+  ---------|-----------|---------------|--------------
+  0.050000 | 2.497327  | 2.126263      | 2.126263
+  0.200000 | 1.842733  | 1.471670      | 1.471670
+  0.500000 | 0.944576  | 0.573512      | 0.573512
+  0.700000 | 0.556584  | 0.185520      | 0.185520
+  0.913043 | 0.371064  | 0.000000      | 0.000000
+  0.990000 | 0.429548  | 0.058484      | 0.058484
+
+  Verdict: F[q] - surprisal == KL(q || posterior) at every q.
+           KL is monotone in distance from exact posterior. Class A.
+
+==============================================================================
+TEST 3
+  Support mismatch: A2 (common support) is essential
+==============================================================================
+  p(y=1) = 0.700000
+  exact posterior = (0.000000, 1.000000)  -- degenerate
+  KL(uniform q || posterior) = +inf (caught: ValueError: Support mismatch: q_i > 0 where p_i = 0)
+
+  Verdict: KL is undefined (divergent) when q has mass outside p's support.
+           Assumption A2 (q << p) is essential, not cosmetic. Class A.
+
+==============================================================================
+TEST 4
+  Gaussian conjugate: continuous bound via closed-form KL
+==============================================================================
+  posterior: N(1.200000, 0.800000)
+  surprisal -ln p(y=1.5) = 1.948657 nats
+
+  q (mean, var)        | KL(q || post)  | F[q]      | F - surprisal
+  ---------------------|----------------|-----------|--------------
+  exact posterior   | 0.000000       | 1.948657  | 0.000000
+  biased N(0,1)     | 0.913428       | 2.862086  | 0.913428
+  overconfident    | 0.704901       | 2.653559  | 0.704901
+
+  Verdict: continuous case via closed-form KL between two Gaussians:
+           KL(N(m_q,v_q) || N(m_p,v_p)) = 0.5*(ln(v_p/v_q) + v_q/v_p
+                                                + (m_q-m_p)^2/v_p - 1).
+           Bound F[q] >= surprisal holds; tight at q = exact posterior.
+           Class A (analytic; no Monte Carlo).
+
+==============================================================================
+TEST 5
+  Sign convention: F + ELBO = 0; wrong-direction wording falsified
+==============================================================================
+  F_Friston(uniform q) = 0.944576
+  ELBO_Beal(uniform q) = -0.944576
+  F + ELBO = 0.00e+00  (must be 0 to machine precision)
+
+  Counter-wording: 'F is a LOWER bound on -ln p(y)' would require
+     F <= surprisal, i.e. 0.944576 <= 0.371064: FALSE
+  Standard: 'F is an UPPER bound on -ln p(y)' requires
+     F >= surprisal, i.e. 0.944576 >= 0.371064: TRUE
+
+  Verdict: F + ELBO = 0 to machine precision. The 'F is a lower bound'
+           wording (Maren TR-2019-01v6 line 319) is numerically falsified.
+           Class A (numerical falsification).
+
+==============================================================================
+TEST 6
+  L expansion: iid surprisal vs. literal repeated-term form
+==============================================================================
+  data vector y = (0, 1, 1, 1, 0)  (3 ones, 2 zeros; p(y=1) = 0.7)
+  per-obs probs = (0.3, 0.7, 0.7, 0.7, 0.3)
+
+  iid surprisal -sum ln p(y_i) = 3.4779704405 nats
+     decomposition: 2 * ln(0.3) + 3 * ln(0.7)
+                  = 2 * (-1.203973) + 3 * (-0.356675)
+                  = -2.407946 + -1.070025
+                  = -3.477970
+                  -> -sum = 3.477970
+
+  literal -I * ln p(y=1) = -5 * ln(0.69) = 1.8553184070
+  difference: 1.622652 nats
+
+  Verdict: iid surprisal != literal repeated-term form unless all y_i
+           are equal. Maren TR-2019-01v6 Eqn 13 is incoherent without
+           an iid factorization with distinct data indices. Class A.
+
+  REPRODUCIBILITY NOTE: v1 manuscript and the prior audit reported
+           iid surprisal = 3.456 for this sample. This was arithmetically
+           incorrect. Correct value is 3.4780 (see decomposition above).
+
+==============================================================================
+TEST 7
+  Measure transformation: analytic computation, no MC
+==============================================================================
+  eta ~ N(0, 1)      ->  E[eta^2] = Var + mean^2 = 1 + 0 = 1.000000
+  r = 2*eta + 3      ->  r ~ N(3, 4)
+                    ->  E[r^2]   = Var + mean^2 = 4 + 9 = 13.000000
+
+  Difference: 12.000000
+
+  Correct change-of-variable: eta = (r - 3) / 2, d_eta = dr / 2.
+  Without applying this Jacobian, simply renaming the integration
+  variable changes the value of the integral by an order of magnitude.
+
+  Verdict: integration over eta differs from integration over r when
+           no measure transformation is supplied. Maren Sec 3.2 / Sec 5.4
+           proposes exactly this rename without map or Jacobian. Class A.
+
+==============================================================================
+TEST 8
+  Markov blanket conditional independence to machine precision
+==============================================================================
+  joint normalization sum = 1.0000000000  (must be 1.0)
+
+  blanket b=(s,a) | p(b)     | max |p(eta,r|b) - p(eta|b)*p(r|b)|
+  ----------------|----------|------------------------------------
+  s=0, a=0        | 0.320000 | 0.00e+00
+  s=0, a=1        | 0.080000 | 0.00e+00
+  s=1, a=0        | 0.180000 | 1.11e-16
+  s=1, a=1        | 0.420000 | 0.00e+00
+
+  Overall max residual = 1.11e-16
+  Acceptance bound: < 5e-16
+  Status: PASS
+
+  Verdict: conditional independence eta _||_ r | (s, a) holds to
+           IEEE 754 double-precision machine epsilon (~1.1e-16). Class A.
+
+==============================================================================
+TEST 9
+  Appendix B Eqn B-1 sign: missing minus inverts F
+==============================================================================
+  Joint masses: p(y=1, eta=0) = 0.0600, p(y=1, eta=1) = 0.6300
+  Entropy of uniform q: H[q] = ln 2 = 0.693147
+
+  Maren B-1 as written (no minus):     -1.637723
+  Standard expected energy (with -):   1.637723
+
+  F = (energy) - H[q]
+     standard form:                    0.944576
+     using B-1 as written:             -2.330870
+
+  Cross-check: Test 1 F (uniform q) = 0.944576
+  Standard form matches Test 1: True
+
+  Verdict: a single missing minus sign in Eqn B-1 inverts the sign and
+           magnitude of F by 3.276 nats and breaks the bound F >= L.
+           Adding the minus sign and renaming the symbol U[q] repairs.
+           Class A. Note Layer-2 caveat: the v1/Maren PDF may contain
+           a minus sign that the text extraction lost; settling this
+           requires inspection of the original PDF or LaTeX source.
+
+==============================================================================
+TEST 10
+  Generic Bethe/Kikuchi vs. F[q]: structural similarity != equality
+==============================================================================
+  Bethe 2-site cluster, h = 1.2, equiprobable:
+     correlation p_AA + p_BB - p_AB - p_BA = 0.000000
+     energy = -ln(h) * correlation         = -0.000000
+     H_pair (4 pair states)                = 1.386294
+     H_site (2 single-site states)          = 0.693147
+     F_bethe = energy - (H_pair - H_site)  = -0.693147
+
+  Active-inference F[q] at uniform q (Test 1 model) = 0.944576
+
+  Numerical distinctness: |F_bethe - F[q]| = 1.637723
+  Both have energy-minus-entropy form, both depend on a parameter h or
+  on a model p(y, eta | m) -- but they are different functionals on
+  different objects.
+
+  Verdict: structural similarity (energy minus entropy) is suggestive
+           but NOT derivational. No formal F_CVM <-> F[q] equivalence
+           is established by this demonstration; that requires the
+           four-item bridge checklist of Maren-audit Chapter 8.2.
+           Class C (illustration); the underlying Kikuchi formulation
+           (Bethe cluster expansion) is itself Class A.
+
+==============================================================================
+TEST 11
+  Complexity-Accuracy form (third form of Eqn 2.5)
+==============================================================================
+  Discrete model (same as Test 1):
+  q(eta=1) | Form 1     | Form 2     | Form 3     | all agree?
+  ---------|------------|------------|------------|-----------
+  0.500000 | 0.9445759076 | 0.9445759076 | 0.9445759076 | YES
+  0.913043 | 0.3710636814 | 0.3710636814 | 0.3710636814 | YES
+  0.950000 | 0.3810889791 | 0.3810889791 | 0.3810889791 | YES
+
+  Gaussian conjugate model (same as Test 4):
+  q (mean, var)        | Form 2 (KL+L)  | Form 3 (Cmplx-Acc) | agree?
+  ---------------------|----------------|---------------------|--------
+  exact posterior   | 1.9486574894   | 1.9486574894        | YES
+  biased N(0,1)     | 2.8620857138   | 2.8620857138        | YES
+  overconfident    | 2.6535585181   | 2.6535585181        | YES
+
+  Verdict: F[q] = D_KL(q || prior) - E_q[ln p(y|eta)] (Form 3) agrees
+           with Form 1 (energy-minus-entropy) and Form 2 (KL+surprisal)
+           on both discrete and continuous models, to floating-point
+           precision. The Complexity-Accuracy decomposition is the third
+           form of SOURCE B Eqn 2.5 (corpus line 1299, label at line 1315).
+           Class A (re-derivable from definitions; numerically anchored).
+
+==============================================================================
+SUMMARY
+  All 11 tests executed deterministically (no RNG)
+==============================================================================
+  Test 1  PASS  master identity, bound, equality at q* (exact)
+  Test 2  PASS  KL monotonicity
+  Test 3  PASS  KL = +inf under support mismatch (caught)
+  Test 4  PASS  Gaussian conjugate via closed-form KL
+  Test 5  PASS  F + ELBO = 0; wrong-direction wording falsified
+  Test 6  PASS  iid surprisal != literal expansion (3.4780 != 1.8553)
+  Test 7  PASS  measure transformation matters analytically
+  Test 8  PASS  CI factorization to machine precision
+  Test 9  PASS  one minus sign repairs F (Layer-2 caveat: PDF check)
+  Test 10 PASS  Bethe and F[q] take different values (illustrative)
+  Test 11 PASS  Complexity-Accuracy form agrees with Forms 1, 2
+
+All values are bit-identical across IEEE 754 double-precision platforms.
+Compare to reference_output.txt with: diff <(python audit_tests_v2.py) reference_output.txt
+

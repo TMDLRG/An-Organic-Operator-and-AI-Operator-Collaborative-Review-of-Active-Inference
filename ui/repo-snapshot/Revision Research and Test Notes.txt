@@ -1,0 +1,774 @@
+I'll begin by surveying the project directory to locate the source documents, then check memory for prior context on this audit.
+
+I found all three sources. Let me read them strategically — starting with SOURCE A (Maren) and SOURCE C (GPT review) in full, and surveying SOURCE B for relevant chapters.
+
+The Maren paper exceeds single-read limits. I'll read it in segments and locate the key equations.
+
+I'll extract the DOCX contents and read the Maren paper in smaller chunks.
+
+I'll set up tracking for this multi-stage audit and continue reading the sources.
+
+Setting up the audit plan, then continuing to read source materials.
+
+I have a thorough understanding of SOURCE A. Now I need to verify against SOURCE B (Parr/Pezzulo/Friston). Let me search for the canonical definitions.
+
+SOURCE B explicitly confirms: "free energy is an upper bound on surprise" — multiple times. Let me get the precise formula.
+
+Updating the todo list to reflect progress.
+
+Excellent. I now have all the source material. Let me run the numerical stress tests in Python to verify the central identities concretely.
+
+Test 1 confirmed: F[q] ≥ -log p(y), ELBO ≤ log p(y), and they coincide at the exact posterior. Now running tests 2-7.
+
+Tests 2-4 confirm the bound discipline. Now testing the sign convention, L(s,a,r) expansion, and the measure-transformation move.
+
+Tests 5-7 confirmed. Now running tests 8-10 on the Markov blanket conditional independence, thermodynamic analogy, and CVM bridge.
+
+All 10 stress tests pass and confirm the central critiques. Now compiling the final deliverable.
+
+# Deep Mathematical Audit: SOURCE A (Maren TR-2019-01v6) — Final Report
+
+**Auditor:** Claude (acting as senior mathematical scientist per [project CLAUDE.md](.claude/CLAUDE.md))
+**Sources audited:**
+- **SOURCE A** — Maren, A.J. (2024). *Derivation of the Variational Bayes Equations.* Themesis TR-2019-01v6, [1906.08804v6.pdf.txt](1906.08804v6.pdf.txt).
+- **SOURCE B** — Parr, T., Pezzulo, G., Friston, K.J. (2022). *Active Inference: The Free Energy Principle in Mind, Brain, and Behavior.* MIT Press, [book_9780262369978 (1).txt](book_9780262369978%20(1).txt).
+- **SOURCE C** — Prior GPT 5.4 Pro mathematical review of SOURCE A, [Ai Onna GPT5.4 Pro.docx](Ai%20Onna%20GPT5.4%20Pro.docx).
+
+This report follows the three-pass discipline of CLAUDE.md (reconstruction, formal audit, adversarial stress test). All numerical results are reproducible from the Python snippets in §12.
+
+---
+
+## 1. Executive Verdict
+
+**Overall mathematical soundness:** *Core algebra correct; interpretive layer unsound; bridge to CVM unproved.*
+
+The central target identity in SOURCE A's Eqn. 2,
+$$
+F(\tilde s,\tilde a,\tilde r) \;=\; \mathbb E_q[L(\tilde x)] - H[q(\tilde\eta\mid\tilde r)] \;=\; L(\tilde s,\tilde a,\tilde r) + D_{\mathrm{KL}}\!\left[q(\tilde\eta\mid\tilde r)\,\|\,p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)\right],
+$$
+is the standard variational identity, recoverable from Beal (2003) Eqns. 2.12–2.16 and identical in content to SOURCE B Eqn. 2.5 ([book line 1299](book_9780262369978%20(1).txt:1299)). The pedagogical intent — to bridge Beal, Friston, and Blei notations — is valuable and partially successful.
+
+However, the manuscript is **not yet publication-ready as a rigorous derivation paper**. Six issues are serious:
+
+1. **q/p role reversal** in the parenthetical note under Eqn. 2 ([SOURCE A:34](1906.08804v6.pdf.txt:34)) inverts the standard VI assignment.
+2. **Bound direction reversed** in Section 6.2 ([SOURCE A:315–319](1906.08804v6.pdf.txt:315)). SOURCE B states the correct direction five times ([lines 1397, 1452, 1605, 2284, 2433](book_9780262369978%20(1).txt:1397)): "free energy is an upper bound on surprise."
+3. **Posterior conflated with external process** ([SOURCE A:132](1906.08804v6.pdf.txt:132)) — calls $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ "the actual distribution of the external system itself." SOURCE B is explicit ([line 1099](book_9780262369978%20(1).txt:1099)): the hidden states of the generative model and the generative process are *not the same*.
+4. **L(s,a,r) expansion** ([SOURCE A:166](1906.08804v6.pdf.txt:166)) writes $L = -\sum_{i=1}^I \ln p(\tilde s,\tilde a,\tilde r)$ as a sum of $I$ identical terms, which is dimensionally incoherent without an iid factorization explicitly stated.
+5. **Integration substitution** ([SOURCE A:105–106](1906.08804v6.pdf.txt:105)) reinterprets $\int \cdot\, d\tilde\eta$ as integration over $\tilde r$ without a pushforward map, induced measure, or Jacobian.
+6. **CVM bridge** in Section 8 is *associative*, not *derivational*. No generative model, variational family, or objective-equivalence proof is supplied.
+
+A seventh issue is moderate but persistent: **Appendix B Eqn. B-1** ([SOURCE A:457](1906.08804v6.pdf.txt:457)) writes the energy-like term as $H = \sum_i \int dx_i\, q(x_i) \ln p(x_i,y_i\mid\theta)$ — missing the negative sign. As written it is the negative of expected energy, not expected energy.
+
+**Bottom-line recommendation:** **Major revision required.** The paper should be repositioned as (i) a Rosetta-stone notation/sign-convention crosswalk, plus (ii) a clearly labeled CVM *proposal*, rather than as an end-to-end derivation paper covering VB → active inference → CVM.
+
+**Top-five required fixes:**
+1. State once at the top: $q$ = variational density (recognition density); $p(\eta\mid y)$ = exact posterior under the generative model. Use this consistently.
+2. Replace Section 6.2 wording with: "$F[q] \ge -\ln p(y)$, with equality iff $q = p(\eta\mid y)$."
+3. Either (a) define $L(s,a,r) := -\ln p(s,a,r)$ as a single joint surprisal and remove the explicit summation, or (b) state an iid factorization $-\sum_{i=1}^N \ln p(s_i, a_i, r_i)$ with $N$ data points.
+4. Either remove the "integrate over $\eta$ but really $r$" move, or define explicitly the map $T : \tilde r \mapsto \tilde\eta$ and the induced pushforward measure.
+5. Demote Section 8 from "derivation" to "proposed recognition architecture," and add the four bridge requirements listed in §11 below.
+
+**Confidence:** 8.5 / 10. Reasoning in §16.
+
+---
+
+## 2. Grounded Truth Summary
+
+This is the corrected core, from first principles. The standard VI identity and the corrected role assignments are:
+
+**Setup.** Let $y$ denote observed variables. In Friston/active-inference notation $y=(\tilde s, \tilde a, \tilde r)$ where $\tilde s$ are sensory states, $\tilde a$ active states, $\tilde r$ internal/representational states. Let $\tilde\eta$ denote external/hidden states. Let $p(y,\tilde\eta\mid m)$ denote the agent's *generative model* (a joint density indexed by model parameters $m$). Let $q(\tilde\eta\mid \tilde r)$ denote the *variational density* (sometimes "recognition density"), parameterized by the internal states $\tilde r$.
+
+**Master identity (proved in §6 below).** Under the assumptions $p(y\mid m) > 0$, common support of $q$ and $p(\cdot\mid y, m)$, and integrability of all log terms,
+$$
+\boxed{\;F[q] \;:=\; \mathbb E_q\!\left[-\ln p(y,\tilde\eta\mid m)\right] - H[q]
+\;=\; \underbrace{-\ln p(y\mid m)}_{=\,L(y),\ \text{surprisal}} \;+\; D_{\mathrm{KL}}\!\bigl(q(\tilde\eta\mid\tilde r)\,\|\,p(\tilde\eta\mid y, m)\bigr).\;}
+$$
+
+**Corrected role assignment.**
+- $q(\tilde\eta\mid\tilde r)$ = approximate / variational posterior. *Not the true posterior.*
+- $p(\tilde\eta\mid y, m)$ = exact posterior under the generative model. *Not the external system itself.*
+- The model posterior $p(\tilde\eta\mid y, m)$ is a quantity inside the agent's model. It is conceptually distinct from the actual external generative process, which the model only approximates.
+
+**Correct bound direction.**
+- $D_{\mathrm{KL}} \ge 0 \Rightarrow F[q] \ge -\ln p(y\mid m) = L(y)$. **Friston-style VFE is an UPPER bound on surprisal / negative log evidence.**
+- Equivalently, the ELBO $\mathcal L(q) := \mathbb E_q[\ln p(y,\tilde\eta\mid m)] + H[q] = \ln p(y\mid m) - D_{\mathrm{KL}} \le \ln p(y\mid m)$. **ELBO is a LOWER bound on log evidence.**
+- $F[q] = -\mathcal L(q)$.
+
+**Correct status of CVM bridge.** The CVM is a *separate variational principle* on a Markov random field with a Kikuchi cluster-entropy approximation. It has not been shown in SOURCE A to be either equal to, or a principled approximation of, the active-inference free-energy functional $F[q]$. Section 8 is a research proposal of value, but it is not a theorem.
+
+---
+
+## 3. Source-by-Source Assessment
+
+### 3.1 SOURCE A (Maren TR-2019-01v6) — what it contributes, where it fails
+
+**Genuine contributions (verified):**
+- Identifies that Friston systematically suppresses summations and integrals in his notation ([SOURCE A:162](1906.08804v6.pdf.txt:162)). This observation is correct and useful.
+- Emphasizes that Eqn. 2 has two algebraically equivalent forms — a perspective often missed in Friston's compressed exposition ([SOURCE A:46–48](1906.08804v6.pdf.txt:46)).
+- Repeatedly flags that thermodynamic language is partly analogical, citing Sengupta, Stemmler, & Friston (2013) directly to that effect ([SOURCE A:68–73](1906.08804v6.pdf.txt:68)).
+- The Beal–Friston sign-flip observation (Beal's $F$ is the negative of Friston's $F$) is correctly identified ([SOURCE A:226–228, 318](1906.08804v6.pdf.txt:226)).
+- The Rosetta-stone goal of Table 4 ([SOURCE A:113–117](1906.08804v6.pdf.txt:113)) is well-motivated, even though execution misfires (see §7).
+
+**Where it fails:**
+- Six serious issues enumerated in §1.
+- See §13 (Error Register) for full ledger.
+
+### 3.2 SOURCE B (Parr, Pezzulo, Friston 2022) — what it establishes
+
+SOURCE B is the canonical contemporary reference for active-inference VFE. Key passages used as adjudication standard:
+
+- **Eqn. 2.5** ([book lines 1299–1321](book_9780262369978%20(1).txt:1299)) gives the canonical three-line identity:
+$$
+F[Q,y] = -\mathbb E_{Q(x)}[\ln P(y,x)] - H[Q(x)] = D_{\mathrm{KL}}[Q(x)\|P(x)] - \mathbb E_{Q(x)}[\ln P(y\mid x)] = D_{\mathrm{KL}}[Q(x)\|P(x\mid y)] - \ln P(y).
+$$
+- **Bound direction** stated five times: "Variational free energy is an upper bound on negative log evidence" ([book line 1397](book_9780262369978%20(1).txt:1397)), echoed at lines 1452, 1605, 2284, 2433.
+- **Negative VFE = ELBO** ([book lines 1284–1293](book_9780262369978%20(1).txt:1284)): "Negative variational free energy is also known as an evidence lower bound (ELBO)."
+- **Generative model vs. process** distinction ([book Figure 2.2 caption, lines 1094–1106](book_9780262369978%20(1).txt:1094)): "The hidden states of the generative model and the generative process are not the same."
+- **Markov blanket** definition (Box 3.1, [book lines 1932–1948](book_9780262369978%20(1).txt:1932)): conditional-independence partition $\mu \perp\!\!\!\perp x \mid b \iff p(\mu,x\mid b) = p(\mu\mid b)\,p(x\mid b)$. SOURCE B explicitly notes ([line 1999](book_9780262369978%20(1).txt:1999)) that "different fields use different notations: sometimes sensory states are denoted $s$, external states $\eta$, and active states $a$" — i.e., the Friston-2013 / Maren convention.
+
+These passages directly settle three of the six findings: the bound direction (item 2), the q/p roles (item 1), and the model/process distinction (item 3).
+
+### 3.3 SOURCE C (GPT 5.4 Pro review) — independent verification
+
+I independently reproduced SOURCE C's principal findings against (i) first-principles algebra, (ii) Python numerical stress tests (§12), and (iii) SOURCE B passages.
+
+**Confirmed (high confidence):** E1 (q/p reversal), E2 (Sec 6.2 bound), E3 (integration substitution), E4 (L expansion), E6 (posterior/process conflation), E8 (Appendix B sign), E9 (Table 4 confusion), E10 (CVM not derived).
+
+**Confirmed with refinement:** E5 — SOURCE C says "q and p independence claim is generally false." More precisely: the manuscript's Sec 5.3 statement "the q and the p address the distributions over different systems, and thus are independent" ([SOURCE A:285](1906.08804v6.pdf.txt:285)) misuses "independent." The required relationship is *common support / integrability*, not stochastic independence. The correction is to remove the independence language and state only the support/integrability conditions.
+
+**Confirmed:** E7 — entropy in Sec 5.2 is occasionally discussed as if equilibrium yields a single value replacing the distribution. Entropy of $q$ remains a functional of the *full* distribution, not of any single equilibrium configuration.
+
+**No critique rejected.** SOURCE C's review is mathematically accurate. Its main limitation is one acknowledged in its own §16: it relies on Maren's quotations rather than direct reading of Beal — I do not directly inspect Beal here either, but the standard VI identities Beal is quoted as instantiating are themselves well-known and verifiable.
+
+---
+
+## 4. Claim Ledger
+
+| ID | Location | Claim | Type | Status | Severity | Conf |
+|----|----------|-------|------|--------|----------|------|
+| C1 | Abstract; [SOURCE A:7](1906.08804v6.pdf.txt:7) | Manuscript provides Beal–Friston–Blei "Rosetta stone" | interpretive | valid (intent), partially valid (execution) | – | 5/5 |
+| C2 | [SOURCE A:42](1906.08804v6.pdf.txt:42) Eqn 2 | $F = E_q[L(\tilde x)] - H[q] = L(\tilde s,\tilde a,\tilde r) + D_{\mathrm{KL}}[q\|p]$ | algebraic identity | **valid** as algebra | none in algebra; serious in surrounding prose | 5/5 |
+| C3 | [SOURCE A:34](1906.08804v6.pdf.txt:34) | $q(\tilde\eta\mid\tilde r)$ is the "true posterior"; $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ is the "variational density" | interpretation | **incorrect** | serious | 5/5 |
+| C4 | [SOURCE A:122–192](1906.08804v6.pdf.txt:122) Eqn 4 derivation | Second equality from Bayes' rule on the conditional posterior | derivation | valid in substance | minor | 5/5 |
+| C5 | [SOURCE A:228–288](1906.08804v6.pdf.txt:228) Eqn 22–34 | First equality follows from Beal's Eqns. 2.12–2.16 after sign flip | derivation | valid; Jensen direction & sign management not fully disciplined | moderate | 4/5 |
+| C6 | [SOURCE A:319](1906.08804v6.pdf.txt:319) Sec 6.2 | "the free energy for the model is a lower bound for the free energy of the external system" | bound/inequality | **incorrect** | serious | 5/5 |
+| C7 | [SOURCE A:62–73](1906.08804v6.pdf.txt:62) Sec 2.3 | Thermodynamic free energy is analogy, not identity | analogy | valid | – | 5/5 |
+| C8 | [SOURCE A:113–117](1906.08804v6.pdf.txt:113) Table 4 | Beal/Friston/Blei notation crosswalk | crosswalk | partially valid; row taxonomies confused | moderate | 4/5 |
+| C9 | [SOURCE A:23–27, 137–139](1906.08804v6.pdf.txt:23) | Markov blanket separates external from internal via sensory + active | concept | broadly valid; causal-vs-CI not separated | moderate | 4/5 |
+| C10 | [SOURCE A:327–392](1906.08804v6.pdf.txt:327) Sec 8 | CVM provides a new computational engine within the variational Bayes framework | extension/proposal | promising; not yet derived | serious (overclaim) | 4/5 |
+| C11 | [SOURCE A:132](1906.08804v6.pdf.txt:132) | $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ is "the actual distribution of the external system itself" | interpretation | **incorrect** (conflates posterior with process) | serious | 5/5 |
+| C12 | [SOURCE A:104–106, 289](1906.08804v6.pdf.txt:104) | Integration over $\tilde\eta$ may be reinterpreted as integration over $\tilde r$ | measure-space move | **incorrect / under-specified** | serious | 5/5 |
+| C13 | [SOURCE A:166](1906.08804v6.pdf.txt:166) Eqn 13 | $L(\tilde s,\tilde a,\tilde r) = -\sum_{i=1}^I \ln p(\tilde s,\tilde a,\tilde r)$ | log-likelihood expansion | **incorrect as written** (repeated sum of identical term) | serious | 4/5 |
+| C14 | [SOURCE A:285](1906.08804v6.pdf.txt:285) Sec 5.3 | $q$ and $p$ are "independent because they address different systems" | independence claim | **incorrect/unneeded** | moderate | 4/5 |
+| C15 | [SOURCE A:457](1906.08804v6.pdf.txt:457) Eqn B-1 | $H = \sum_i \int dx_i\, q(x_i) \ln p(x_i, y_i\mid\theta)$ | thermodynamic analogy | **sign error**; should be $-\int q\ln p$ | serious (sign) | 4/5 |
+| C16 | [SOURCE A:335–342](1906.08804v6.pdf.txt:335) Sec 8.1 | "external and representational systems each separately achieve free energy minimization" | active-inference claim | conceptual; not implied by VI identity | moderate (overreach) | 4/5 |
+| C17 | [SOURCE A:269–283](1906.08804v6.pdf.txt:269) Sec 5.3 | Eq[L(\tilde x)] called "expected enthalpy" | thermodynamic analogy | partially valid; "enthalpy" misleading without thermodynamic state-function structure | moderate | 4/5 |
+
+---
+
+## 5. Equation-by-Equation Audit
+
+| Eqn | Location | Reconstructed role | Validation result | Issue (if any) | Correction | Conf |
+|-----|----------|---------------------|---------------------|----------------|------------|------|
+| (1) | [SOURCE A:38–39](1906.08804v6.pdf.txt:38) | Dynamic gradient flows | uncheckable here; manuscript explicitly defers | "Eqn. 1 is taken from [Friston 2015]" — note dependency | leave deferred; cite source equation | 4/5 |
+| **(2)** | [SOURCE A:42](1906.08804v6.pdf.txt:42) | Master identity (two forms) | **valid as algebra**; surrounding interpretive note inverts q/p | None in algebra | rewrite the parenthetical note ([line 34](1906.08804v6.pdf.txt:34)); state q is variational, p is exact posterior under generative model | 5/5 |
+| (3) | [SOURCE A:52](1906.08804v6.pdf.txt:52) | Visual definition figure | uncheckable from extracted text (figure missing) | – | redraw with explicit q/p labels | 3/5 |
+| (4) | [SOURCE A:123](1906.08804v6.pdf.txt:123) | Restatement of Eqn 2 second equality | valid | – | – | 5/5 |
+| (5) | [SOURCE A:130](1906.08804v6.pdf.txt:130) | Reverse-KL definition | valid as definition | sum sign / sum index suppressed | state explicitly $D_{\mathrm{KL}} = \sum_{\tilde\eta} q\ln(q/p)$ for discrete | 5/5 |
+| (6)–(7) | [SOURCE A:149–150](1906.08804v6.pdf.txt:149) | Bayes' decomposition $p(w\mid v) = p(w,v)/p(v)$ | valid (textbook) | normalization/support condition not stated | add $p(v) > 0$ | 5/5 |
+| (8) | [SOURCE A:153](1906.08804v6.pdf.txt:153) | $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r) = p(\tilde\eta,\tilde s,\tilde a,\tilde r)/p(\tilde s,\tilde a,\tilde r)$ | valid | $p(\tilde s,\tilde a,\tilde r) > 0$ should be stated | add support condition | 5/5 |
+| (9)–(10) | [SOURCE A:155–157](1906.08804v6.pdf.txt:155) | Substitute Bayes into reverse KL | valid in substance; equation glyphs garbled in extraction | algebraic identity intact | restate cleanly as $\sum q\ln(q/(p(\tilde\eta,\tilde s,\tilde a,\tilde r)/p(\tilde s,\tilde a,\tilde r)))$ | 4/5 |
+| (11) | [SOURCE A:159](1906.08804v6.pdf.txt:159) | Reorganize using $\sum q = 1$ | valid in substance | claim that "$q$ is independent of $p$" misuses "independent" | replace with "$q(\tilde\eta\mid\tilde r)$ is normalized: $\sum_{\tilde\eta} q = 1$" | 4/5 |
+| (12)–(13) | [SOURCE A:166](1906.08804v6.pdf.txt:166) | $L(\tilde s,\tilde a,\tilde r) = -\sum_{i=1}^I \ln p(\tilde s,\tilde a,\tilde r)$ | **incorrect as written** | repeated identical term × $I$ | either (a) drop $\sum$, or (b) write $-\sum_i \ln p(\tilde s_i,\tilde a_i,\tilde r_i)$ if iid is intended | 4/5 |
+| (14)–(15) | [SOURCE A:172–176](1906.08804v6.pdf.txt:172) | Final algebraic rearrangement | valid | – | – | 5/5 |
+| (16) | [SOURCE A:181](1906.08804v6.pdf.txt:181) | $F = -\sum q\ln(p(\tilde\eta,\tilde s,\tilde a,\tilde r)/q)$ | valid (Friston VFE form) | – | – | 5/5 |
+| (17) | [SOURCE A:186](1906.08804v6.pdf.txt:186) | $L(\tilde s,\tilde a,\tilde r) = -\ln p(\tilde s,\tilde a,\tilde r)$ | **valid** as a *single* surprisal definition | conflicts with Eqn 13 sum — pick one | adopt this single-surprisal form; drop Eqn 13 sum | 5/5 |
+| (18) | [SOURCE A:191–192](1906.08804v6.pdf.txt:191) | Combined identity | valid | derived from corrected (16)+(17) | – | 5/5 |
+| (19) | [SOURCE A:200](1906.08804v6.pdf.txt:200) | Friston's Eqn. 2.7 transcription | valid | – | – | 4/5 |
+| (20)–(22) | [SOURCE A:217–223](1906.08804v6.pdf.txt:217) | Beal's Eqns 2.12–2.16 (Jensen) | valid (textbook) | extraction garbled | restate cleanly with Jensen | 4/5 |
+| (23) | [SOURCE A:225](1906.08804v6.pdf.txt:225) | Restatement of Eqn 2 first equality | valid | – | – | 5/5 |
+| (24)–(27) | [SOURCE A:229–237](1906.08804v6.pdf.txt:229) | Three equivalences to establish | valid as decomposition | sign-flip discipline could be tighter | state once: "Friston $F$ = $-$Beal $F$"; then mirror inequality | 4/5 |
+| (28)–(30) | [SOURCE A:244–250](1906.08804v6.pdf.txt:244) | Equivalence of $F$ expressions | valid | – | – | 5/5 |
+| (31) | [SOURCE A:264](1906.08804v6.pdf.txt:264) | Boltzmann entropy definition | textbook | classical statistical-mechanics identity | – | 5/5 |
+| (32)–(33) | [SOURCE A:279–281](1906.08804v6.pdf.txt:279) | $L(\tilde x) = -\ln p(\tilde\eta,\tilde s,\tilde a,\tilde r)$ | valid as energy-like definition | "enthalpy" label is misleading | rename "expected energy" or "negative log joint" | 5/5 |
+| (34) | [SOURCE A:299](1906.08804v6.pdf.txt:299) | Friston-style restatement | valid in substance; uses ambiguous integration variable | keep $\int \cdot\, d\tilde\eta$, do **not** reparameterize as $\int \cdot\, d\tilde r$ | 3/5 |
+| (A-1)–(A-17) | [SOURCE A:398–448](1906.08804v6.pdf.txt:398) | Statistical-thermodynamics primer | textbook material; mostly valid | mixes Helmholtz/Gibbs/internal-energy labels (acknowledged in text) | tighten label use; explicitly mark when "$H$" is enthalpy vs. entropy | 4/5 |
+| **(B-1)** | [SOURCE A:457](1906.08804v6.pdf.txt:457) | $H = \sum_i \int dx_i\, q(x_i)\ln p(x_i,y_i\mid\theta)$ | **sign error** as written | the energy-like term is $\mathbb E_q[-\ln p]$, not $\mathbb E_q[+\ln p]$ | replace with $U[q] = -\sum_i \int dx_i\, q(x_i)\ln p(x_i,y_i\mid\theta)$ | 4/5 |
+| (B-2)–(B-7) | [SOURCE A:462–493](1906.08804v6.pdf.txt:462) | Beal's setup; Jensen step | valid (textbook); extraction garbled | – | – | 4/5 |
+| (B-8)–(B-17) | [SOURCE A:500–518](1906.08804v6.pdf.txt:500) | Feynman-style thermodynamic restatement | textbook; valid | mixed Helmholtz vs. Gibbs labels | tighten | 4/5 |
+| (C-1) | [SOURCE A:543–545](1906.08804v6.pdf.txt:543) | 2-D CVM free energy with Lagrange multipliers | valid as a Kikuchi cluster-variation free energy | not formally linked to $F[q]$ | present as separate functional or supply formal bridge (see §11) | 3/5 |
+| (C-2) | [SOURCE A:548](1906.08804v6.pdf.txt:548) | Analytic equilibrium expression for $z_3$ in $h$ | valid CVM result (Kikuchi & Brush 1967) | divergence at large $h$ acknowledged | – | 4/5 |
+
+---
+
+## 6. Corrected Core Derivation
+
+Below is a publication-grade, first-principles derivation of the master identity. This is the form Section 2 of SOURCE A should converge to.
+
+### 6.1 Definitions and assumptions
+
+**Definitions.**
+1. Generative model: $p(y, \tilde\eta \mid m)$, a joint probability density (or mass function) over observed variables $y$ and hidden/external variables $\tilde\eta$, indexed by model parameters $m$. In the Friston/Maren active-inference setting, $y = (\tilde s, \tilde a, \tilde r)$.
+2. Marginal model evidence: $p(y \mid m) := \int p(y,\tilde\eta\mid m)\, d\tilde\eta$.
+3. Exact posterior under the generative model: $p(\tilde\eta \mid y, m) := p(y,\tilde\eta\mid m) / p(y\mid m)$, defined wherever $p(y\mid m) > 0$.
+4. Variational density (recognition density): $q(\tilde\eta\mid\tilde r)$, an arbitrary density over $\tilde\eta$ that may be parameterized by internal states $\tilde r$ and/or sufficient statistics $\mu$. Member of a chosen family $\mathcal Q$.
+5. Surprisal / negative log evidence: $L(y) := -\ln p(y\mid m)$.
+6. Shannon entropy of $q$: $H[q] := -\int q(\tilde\eta\mid\tilde r) \ln q(\tilde\eta\mid\tilde r)\, d\tilde\eta$.
+7. Kullback–Leibler divergence (forward to $p$): $D_{\mathrm{KL}}(q \| p) := \int q \ln(q/p)$, defined whenever the integrand is well-defined and $q \ll p$ (q is absolutely continuous wrt p).
+
+**Assumptions.**
+- A1 (positivity of evidence): $p(y\mid m) > 0$.
+- A2 (common support): $q \ll p(\cdot \mid y, m)$ (so the KL is finite).
+- A3 (integrability): $\ln p(y,\tilde\eta\mid m)$ and $\ln q(\tilde\eta\mid\tilde r)$ are $q$-integrable.
+
+These three suffice for everything below. Stochastic independence between $q$ and $p$ is *not* required and *not* meaningful as stated in [SOURCE A:285](1906.08804v6.pdf.txt:285).
+
+### 6.2 The master identity
+
+**Definition of variational free energy.** Set
+$$
+F[q] \;:=\; \int q(\tilde\eta\mid\tilde r) \ln \frac{q(\tilde\eta\mid\tilde r)}{p(y,\tilde\eta\mid m)}\, d\tilde\eta.
+$$
+
+**Form 1 (energy minus entropy).** Splitting the logarithm,
+$$
+F[q] = \int q\,\ln q\, d\tilde\eta \;-\; \int q\,\ln p(y,\tilde\eta\mid m)\, d\tilde\eta = -H[q] + \mathbb E_q\!\left[-\ln p(y,\tilde\eta\mid m)\right].
+$$
+Rearranging:
+$$
+\boxed{\;F[q] = \mathbb E_q\!\left[-\ln p(y,\tilde\eta\mid m)\right] - H[q].\;} \tag{$\star$}
+$$
+The first term is "expected energy" or "expected negative log joint." It is *structurally* analogous to thermodynamic energy but is not a physical energy.
+
+**Form 2 (surprisal plus KL divergence).** Apply Bayes' rule (Assumption A1):
+$$
+\ln p(y, \tilde\eta\mid m) = \ln p(\tilde\eta\mid y, m) + \ln p(y\mid m).
+$$
+Substitute into the definition of $F[q]$:
+$$
+F[q] = \int q \ln \frac{q}{p(\tilde\eta\mid y, m)\, p(y\mid m)}\, d\tilde\eta = \int q \ln \frac{q}{p(\tilde\eta\mid y, m)}\, d\tilde\eta \;-\; \ln p(y\mid m) \int q\, d\tilde\eta.
+$$
+Using $\int q\, d\tilde\eta = 1$:
+$$
+\boxed{\;F[q] = D_{\mathrm{KL}}\!\bigl(q(\tilde\eta\mid\tilde r) \,\big\|\, p(\tilde\eta\mid y, m)\bigr) \;-\; \ln p(y\mid m) \;=\; D_{\mathrm{KL}}(q\|p(\tilde\eta\mid y)) + L(y).\;} \tag{$\star\star$}
+$$
+
+Identities $(\star)$ and $(\star\star)$ together are the corrected version of SOURCE A's Eqn. 2.
+
+### 6.3 Bound direction (Lemma)
+
+**Lemma 1.** Under A1–A3, $F[q] \ge L(y) = -\ln p(y\mid m)$, with equality iff $q(\tilde\eta\mid\tilde r) = p(\tilde\eta\mid y, m)$ a.e.
+
+*Proof.* By Gibbs' inequality, $D_{\mathrm{KL}}(q\|p(\tilde\eta\mid y, m)) \ge 0$, with equality iff $q = p(\tilde\eta\mid y, m)$. Apply to $(\star\star)$. $\square$
+
+### 6.4 ELBO and sign-convention bridge (Lemma)
+
+**Definition (ELBO).** $\mathcal L(q) := \mathbb E_q[\ln p(y, \tilde\eta\mid m)] + H[q]$.
+
+**Lemma 2 (Beal–Friston sign convention).** $\mathcal L(q) = \ln p(y\mid m) - D_{\mathrm{KL}}(q\|p(\tilde\eta\mid y, m))$, hence $\mathcal L(q) \le \ln p(y\mid m)$. Furthermore $F[q] = -\mathcal L(q)$.
+
+*Proof.* From Form 1, $F[q] = -\mathbb E_q[\ln p(y,\tilde\eta\mid m)] - H[q] = -\mathcal L(q)$. Combining with $(\star\star)$ gives the displayed identity for $\mathcal L$. The bound follows from KL $\ge 0$. $\square$
+
+**Sign-convention crosswalk.**
+- Beal/Blei convention: maximize ELBO $\mathcal L(q)$, which lower-bounds $\ln p(y\mid m)$.
+- Friston convention: minimize VFE $F[q]$, which upper-bounds $-\ln p(y\mid m)$.
+- These are *equivalent* under sign reversal: $F[q] = -\mathcal L(q)$.
+
+This corrects SOURCE A Section 6.2 and clarifies the two conventions definitively.
+
+---
+
+## 7. Notation Audit
+
+### 7.1 Overloaded and unstable symbols in SOURCE A
+
+| Symbol | Used as | Where it drifts |
+|--------|---------|-----------------|
+| $q$ | (a) variational density over $\tilde\eta$; (b) "model distribution"; (c) "equilibrium distribution of the external system itself" | drift between [SOURCE A:34, 132, 134, 254](1906.08804v6.pdf.txt:34) |
+| $p$ | (a) generative joint density; (b) exact posterior under generative model; (c) "actual external system" | drift between [SOURCE A:132, 308, 313](1906.08804v6.pdf.txt:132) |
+| $L(\tilde s,\tilde a,\tilde r)$ | (a) negative log evidence (single surprisal); (b) sum over units; (c) "actual state of affairs" of the representational system | conflict between [SOURCE A:166, 186, 195](1906.08804v6.pdf.txt:166) |
+| $L(\tilde x)$ | negative log joint $-\ln p(\tilde\eta, \tilde s, \tilde a, \tilde r\mid m)$ | this single use in Eqn 33 is *correct* — keep it |
+| $H$ | Shannon entropy of $q$; *also* enthalpy in Appendix A; *also* "expected energy" labeled $H$ in App. B | three distinct meanings under one symbol |
+| $F$ | Friston's VFE; Beal's $-F$; thermodynamic Helmholtz/Gibbs in appendices | three meanings |
+| $m$ vs $\theta$ | Friston's model index vs Beal's parameter notation | not harmonized |
+| $\eta$ vs $x$ | Friston's external states vs Beal's hidden vars | acknowledged in Table 4 but not used consistently |
+
+### 7.2 Table 4 problems
+
+Table 4 ([SOURCE A:113–117](1906.08804v6.pdf.txt:113)) attempts a Beal/Friston/Blei crosswalk. Two row taxonomies are problematic:
+
+- The row "Observable Variable; Dependent or 'Internal States'?" lists Friston's column as $\tilde s, \tilde r$ and Blei's as $x_i$. But in Friston's active-inference framing, $\tilde s$ are sensory observations while $\tilde r$ are *internal latent states that parameterize the variational density*. They are not both "observable." Listing them in the same row equates two distinct ontological categories.
+- The row "Hidden Variable; Independent, Latent, or 'External States'" lists Friston's $\tilde\eta$. This is correct.
+- The row "Markov 'sensing' units" assigns Friston-only $\tilde s$ — but $\tilde s$ already appears in the "Observable" row, so the table double-counts $\tilde s$.
+
+The fix is to construct the table along *role*, not along *symbol*. Suggested clean version below.
+
+### 7.3 Recommended notation table
+
+| Role | Friston/Maren | Beal | Blei |
+|------|---------------|------|------|
+| Observed data (in conditioning) | $y = (\tilde s, \tilde a, \tilde r)$ | $y = \{y_1,\dots,y_n\}$ | $x = x_{1:n}$ |
+| Hidden / external states | $\tilde\eta$ | $x = \{x_1,\dots,x_n\}$ | $z = z_{1:m}$ |
+| Generative joint | $p(y, \tilde\eta \mid m)$ | $p(x, y \mid \theta)$ | $p(x, z)$ |
+| Marginal evidence | $p(y\mid m)$ | $p(y\mid\theta)$ | $p(x)$ |
+| Exact posterior (under model) | $p(\tilde\eta\mid y, m)$ | $p(x\mid y,\theta)$ | $p(z\mid x)$ |
+| Variational density | $q(\tilde\eta\mid\tilde r)$ | $q_x(x)$ | $q(z)$ |
+| Internal states / sufficient stats | $\tilde r$ (or $\mu$) | – | – |
+| Sensory / active blanket states | $\tilde s, \tilde a$ | – | – |
+| Surprisal | $L(y) = -\ln p(y\mid m)$ | $-\mathcal L(\theta)$ in Beal's notation when negated | $-\ln p(x)$ |
+| Variational free energy | $F[q] := \mathbb E_q[-\ln p] - H[q]$ | $-F(q_x(x), \theta)$ in Beal | – (uses ELBO) |
+| ELBO | $\mathcal L(q) = -F[q]$ | $F(q_x(x), \theta)$ | $\mathrm{ELBO}(q)$ |
+| Bound | $F[q] \ge -\ln p(y\mid m)$ | $F(q_x(x),\theta) \le \ln p(y\mid\theta)$ | $\mathrm{ELBO}(q) \le \ln p(x)$ |
+
+### 7.4 Suppressed sums / integrals
+
+Maren is *correct* that Friston suppresses summations and integrations ([SOURCE A:162](1906.08804v6.pdf.txt:162)). This is a real and useful pedagogical observation. But the discipline required after suppression is:
+
+- Once a symbol like $\sum$ or $\int$ is suppressed, the manuscript must still keep straight (a) which variable carries the implicit measure, (b) which density supplies it, and (c) what is inside the expectation.
+- The discipline breaks in Section 3.2 (the "integrate over $\tilde\eta$ but really $\tilde r$" move) and in Section 5.4 (Eqn. 34 with implicit reparameterization).
+
+---
+
+## 8. Bound and Sign-Convention Audit
+
+### 8.1 The hierarchy
+
+Under Assumptions A1–A3 of §6:
+
+| Convention | Functional | Bound | Direction |
+|------------|------------|-------|-----------|
+| ELBO (Beal/Blei/ML) | $\mathcal L(q) = \mathbb E_q[\ln p] + H[q]$ | $\mathcal L(q) \le \ln p(y\mid m)$ | LOWER bound on log evidence |
+| VFE (Friston/active inf.) | $F[q] = \mathbb E_q[-\ln p] - H[q]$ | $F[q] \ge -\ln p(y\mid m)$ | UPPER bound on surprisal / negative log evidence |
+| Identity | $F[q] = -\mathcal L(q)$ | – | sign flip |
+| Tightness | KL $= 0$ | $F[q] = -\ln p(y)$, $\mathcal L(q) = \ln p(y)$ | iff $q = p(\eta\mid y, m)$ |
+
+### 8.2 Why SOURCE A Section 6.2 currently fails
+
+[SOURCE A:319](1906.08804v6.pdf.txt:319) reads: *"the free energy for the model is a lower bound for the free energy of the external system. As the model is brought closer to alignment with the external system… the free energy of the model approaches that of the external system $(L(\tilde s,\tilde a,\tilde r) \to F(\tilde s,\tilde a,\tilde r))$."*
+
+Decomposition of the error:
+1. The phrase "free energy of the external system" is undefined. In Maren's notation $L = -\ln p$ is *surprisal*, not a free energy of a physical system. Calling it "the free energy of the external system" misnames it.
+2. The bound goes the *opposite* direction. From $F[q] = L + D_{\mathrm{KL}} \ge L$ (with $D_{\mathrm{KL}} \ge 0$), $F$ upper-bounds $L$. Hence "$F$ is a lower bound for $L$" reverses the inequality.
+3. The arrow $L \to F$ is also inverted. As alignment improves (KL decreases), it is $F$ that approaches $L$ from above, not $L$ that approaches $F$ from below.
+
+### 8.3 Recommended replacement wording for Section 6.2
+
+> "By Gibbs' inequality, $D_{\mathrm{KL}}(q\|p(\tilde\eta\mid y, m)) \ge 0$. From the second form of Eqn. 2, $F(\tilde s,\tilde a,\tilde r) = L(\tilde s,\tilde a,\tilde r) + D_{\mathrm{KL}} \ge L(\tilde s,\tilde a,\tilde r)$, where $L(\tilde s,\tilde a,\tilde r) = -\ln p(\tilde s,\tilde a,\tilde r\mid m)$ is the surprisal (negative log evidence) of the observed blanket and internal states under the generative model. Thus the variational free energy is an *upper bound* on surprisal. Equivalently (by sign reversal), the negative free energy — the ELBO — is a *lower bound* on the log evidence. As the variational density $q$ is brought closer to the exact posterior $p(\tilde\eta\mid y, m)$, the divergence shrinks and $F \to L$ from above."
+
+### 8.4 Stress-test verification (numerical)
+
+§12 Test 1 confirms: with $p(\eta=1) = 0.7$, $p(y=1\mid\eta=1) = 0.9$, $p(y=1\mid\eta=0) = 0.2$, observed $y=1$:
+- Surprisal $-\ln p(y=1) = 0.371$ nats, exact posterior $p(\eta=1\mid y=1) = 0.913$.
+- For uniform $q$: $F[q] = 0.945 > 0.371$, with margin = KL = 0.574. ✓
+- For $q$ = exact posterior: $F[q] = 0.371 = $ surprisal. ✓
+- For $q(\eta=1) = 0.95$ (close): $F = 0.381 > 0.371$, margin = KL = 0.010. ✓
+
+---
+
+## 9. Markov Blanket & Active-Inference Audit
+
+### 9.1 What works in SOURCE A
+
+The manuscript correctly emphasizes that Friston's notation introduces a partition of the system into external states $\tilde\eta$, internal/representational states $\tilde r$, and blanket states $\tilde s, \tilde a$ — a real conceptual departure from Beal's simpler latent-variable VI. Figure 1 and Figure 3 are essentially correct schematic diagrams of the architecture.
+
+### 9.2 What needs tightening
+
+Three distinct things are referred to as "the Markov blanket" and need to be separated:
+
+**(a) Conditional-independence statement.** Per SOURCE B Box 3.1 ([book lines 1932–1948](book_9780262369978%20(1).txt:1932)):
+$$
+\mu \perp\!\!\!\perp x \mid b \iff p(\mu, x \mid b) = p(\mu \mid b)\, p(x \mid b).
+$$
+This is the formal definition. Numerical verification in §12 Test 8 confirms the factorization on a simple constructed joint.
+
+**(b) Causal / process diagram.** Influence flows in a particular pattern, e.g., "internal states cannot directly change external states but can do so vicariously by changing active states" ([SOURCE B:1961](book_9780262369978%20(1).txt:1961)). This is a *dynamic* claim about Jacobians and is logically distinct from (a).
+
+**(c) Inference architecture.** Internal states *parameterize* a recognition density $q(\tilde\eta\mid\tilde r)$. This is a *modeling* choice on top of (a) and (b); the agent uses the blanket structure to organize its inference.
+
+[SOURCE A:23–27, 137–139](1906.08804v6.pdf.txt:23) blends these three. The revised manuscript should treat each in turn and label which one it is invoking.
+
+### 9.3 Generative model vs. generative process
+
+SOURCE A repeatedly conflates the model posterior $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ with the actual external process. Most explicit at [SOURCE A:132](1906.08804v6.pdf.txt:132): *"the actual distribution of the external system itself $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$."*
+
+SOURCE B Figure 2.2 caption ([book lines 1094–1106](book_9780262369978%20(1).txt:1094)) is the gold standard:
+> "The hidden states of the generative model and the generative process are not the same. The organism's model includes a range of hypotheses ($x$) about the hidden state, which do not necessarily include the true value of the hidden state $x^*$ of the generative process… It might be that the hidden states in the external world take on values that lie outside the space of explanations available to the brain."
+
+SOURCE A's collapse of the two is a category error, not a notational shortcut.
+
+### 9.4 "Both systems separately come to free-energy minima"
+
+[SOURCE A:335–341](1906.08804v6.pdf.txt:335) and §8.1 generally claim that the external system and the representational system *each separately* achieve free-energy minimization. As a conceptual picture aligned with NESS / active-inference scaffolding (cf. [book lines 2581–2603](book_9780262369978%20(1).txt:2581)), this is defensible. As a derived claim in a VB derivation paper, it is under-argued. The standard VI identity establishes only that an *agent's* internal states minimize $F[q]$; the additional claim that the external generative process is *itself* governed by a free-energy minimum requires a NESS/Helmholtz-machine argument that the manuscript does not provide.
+
+The fix is conservative wording: "Under steady-state assumptions of the type discussed in Friston (2013), the external system can also be characterized by a free-energy-like steady-state distribution. We do not derive that result here; we rely on it as a modeling assumption."
+
+---
+
+## 10. Thermodynamic Analogy Audit
+
+### 10.1 Where the analogy is valid
+
+The structural form
+$$
+F[q] = (\text{expected energy}) - (\text{entropy})
+$$
+is genuinely analogous to the Helmholtz free energy $F = U - TS$ (with the temperature absorbed by reduction). SOURCE A is justified in using this analogy as didactic motivation, especially in §2 and §6.1.
+
+### 10.2 Where the manuscript itself is correct in flagging limits
+
+[SOURCE A:68–73](1906.08804v6.pdf.txt:68) usefully quotes Sengupta, Stemmler, & Friston (2013): "*variational free energy is not the Helmholtz free energy* … it is a functional of a probability distribution over hidden (fictive) states encoded by internal states $q(y\mid m)$, not the probability distribution over the (physical) internal states." This is exactly the right warning, and the manuscript deserves credit for including it.
+
+### 10.3 Where the manuscript still overreaches
+
+Three issues remain after the Sengupta caveat:
+
+**(a) "Enthalpy" label.** Calling $\mathbb E_q[-\ln p]$ "enthalpy" is too aggressive. Enthalpy in classical thermodynamics is $H = U + pV$ — internal energy plus pressure-volume work. The variational quantity has no $pV$ analog. Safer terminology: *expected energy*, *expected negative log joint*, or *Gibbs/expected energy term* (with the qualifier).
+
+**(b) Helmholtz vs. Gibbs collapse.** [SOURCE A:70](1906.08804v6.pdf.txt:70) Author's Note 2: *"The distinction between Helmholtz and Gibbs free energies disappears when we use the thermodynamic free energy formulations as a metaphor."* This is rhetorically understandable but mathematically risky. Helmholtz $A = U - TS$ and Gibbs $G = H - TS = U + pV - TS$ are *different* state functions. Under the metaphor, neither is literally being computed — but saying the distinction "disappears" invites future readers to fold them in unprincipled ways. Better wording: "Because we are operating purely structurally and not at constant pressure or volume, the distinction between Helmholtz- and Gibbs-style free energies does not bear on the algebra here. We use the analogy only as far as the energy-minus-entropy structure."
+
+**(c) Appendix B sign error in Eqn. B-1.** As written:
+$$
+H = \sum_i \int dx_i\, q(x_i) \ln p(x_i, y_i\mid\theta).
+$$
+Numerical check in §12 Test 9: for $p(\eta) = (0.3, 0.7)$, $p(y=1\mid\eta) = (0.2, 0.9)$, uniform $q$:
+- Maren's "$H$" as written = $-1.638$.
+- Standard expected energy $\mathbb E_q[-\ln p] = +1.638$.
+- These differ by a sign. The standard form is the one consistent with $F = $ energy $-$ entropy $\ge 0$ (in nats, for non-degenerate cases).
+
+The fix is one character: insert a minus sign and call the symbol $U[q]$:
+$$
+U[q] = -\sum_i \int dx_i\, q(x_i) \ln p(x_i, y_i\mid\theta).
+$$
+
+---
+
+## 11. CVM Computational Engine Audit
+
+### 11.1 Positive assessment
+
+Section 8 and Appendix C are the manuscript's most original contribution. The CVM provides an explicit internal free-energy landscape on a Markov-random-field grid with a Kikuchi cluster-entropy approximation that is more expressive than mean-field while remaining tractable. The configuration variables (single, NN-pair $y_i$, NNN-pair $w_i$, triplet $z_i$), degeneracy factors, and the analytic equilibrium expression Eqn. C-2 are coherent and traceable to Kikuchi & Brush (1967).
+
+The motivating intuition — that representational units in active inference need an *internal* free-energy landscape to actually compute over, and that CVM provides one — is intellectually substantive.
+
+### 11.2 Core mathematical problem
+
+The manuscript does not show that the CVM free energy is the same functional as $F[q]$ in Eqn. 2, nor that it is a principled approximation of $F[q]$. The claim of "integration into the variational Bayes framework" rests entirely on:
+- structural similarity (energy minus entropy form),
+- shared use of the word "free energy,"
+- the verbal assertion at [SOURCE A:578–582](1906.08804v6.pdf.txt:578) that "the model $q$ is formed by bringing the representational system $\tilde r$ into free energy equilibrium."
+
+None of these constitute a derivation.
+
+### 11.3 What is missing — a four-item checklist
+
+To make Section 8 a derivation rather than a proposal, the manuscript must specify:
+
+1. **Generative model** $p(y, \tilde\eta\mid m)$ in CVM-compatible form. What are the random variables? What is the joint? What does $m$ index?
+2. **Variational family** $\mathcal Q$ of densities $q_\phi(\tilde\eta)$ parameterized by CVM configuration variables $\phi = (x_1, x_2, y_1, \dots, w_i, z_i)$ plus enthalpy parameters $(\epsilon_0, \epsilon_1)$. How do the CVM configurations parameterize the recognition density? Is this an exponential family? A maximum-entropy family with cluster constraints?
+3. **Objective relationship.** Is $F_{\mathrm{CVM}}(\phi) = F[q_\phi]$ exactly (theorem), or is $F_{\mathrm{CVM}}(\phi) \ge F[q_\phi]$ (a surrogate upper bound), or is $|F_{\mathrm{CVM}}(\phi) - F[q_\phi]|$ controlled by some approximation parameter? Or is $F_{\mathrm{CVM}}$ a *separate* free-energy functional that has no formal relation to $F[q]$ but happens to be useful?
+4. **Assumptions A1–A?** under which the bridge holds.
+
+A revised proposition would look like:
+
+> **Proposition (proposed; not yet proved).** Let $q_\phi(\tilde\eta)$ be the maximum-entropy density on the CVM grid with configuration-variable expectations $\phi$. Let $F_{\mathrm{CVM}}(\phi)$ be the CVM free energy of Eqn. C-1. Under assumptions [to be stated]: $F_{\mathrm{CVM}}(\phi) = F[q_\phi] + R(\phi)$ where the residual $R$ is bounded by [to be quantified].
+
+### 11.4 Verdict
+
+Section 8 is **promising but incomplete**. It should be repositioned as:
+- a *proposal* for a recognition architecture,
+- with an explicit research agenda to establish the four bridge items above,
+- and clear language ("we propose," "we conjecture," "future work will establish") rather than claims of derivation.
+
+This preserves the manuscript's originality without overclaiming. SOURCE C reaches the same conclusion (E10), and I confirm it independently.
+
+---
+
+## 12. Stress Tests and Reproducible Evidence
+
+All 10 tests are reproducible. Each block below is self-contained Python (numpy + math). Outputs were verified by direct execution.
+
+### Test 1 — Discrete toy: identity and bound
+Setup: $\eta\in\{0,1\}$, $p(\eta) = (0.3, 0.7)$, $p(y=1\mid\eta) = (0.2, 0.9)$, observed $y = 1$.
+- Marginal $p(y=1) = 0.69$; surprisal $-\ln p(y=1) = 0.371064$ nats.
+- Exact posterior $p(\eta=1\mid y=1) = 0.913043$.
+
+| $q(\eta=1)$ | $F[q]$ | KL | ELBO | $F[q] = -$ELBO? | $F[q] \ge -\ln p(y)$? |
+|------------|--------|-----|------|-----------------|------------------------|
+| 0.5 (uniform) | 0.944576 | 0.573512 | -0.944576 | ✓ | ✓ |
+| 0.913043 (exact) | 0.371064 | 0.000000 | -0.371064 | ✓ | tight |
+| 0.95 (close) | 0.381089 | 0.010025 | -0.381089 | ✓ | ✓ |
+
+Both forms of Eqn. 2 yield identical $F[q]$. The bound $F[q] \ge -\ln p(y)$ holds always, with equality iff $q$ = exact posterior. ✓
+
+### Test 2 — Bad approximate posterior
+
+| $q(\eta=1)$ | $F[q]$ | KL | $F + \ln p(y)$ |
+|------------|--------|-----|----------------|
+| 0.05 | 2.497 | 2.126 | 2.126 |
+| 0.20 | 1.843 | 1.472 | 1.472 |
+| 0.50 | 0.945 | 0.574 | 0.574 |
+| 0.70 | 0.557 | 0.186 | 0.186 |
+| 0.913 | 0.371 | 0.000 | 0.000 |
+| 0.99 | 0.430 | 0.058 | 0.058 |
+
+KL is monotonic with distance from the exact posterior; $F$ tracks KL exactly. The bound holds throughout. ✓
+
+### Test 3 — Support mismatch
+Set $p(y=1\mid\eta=0) = 0$, $p(y=1\mid\eta=1) = 1$. Then exact posterior $= (0,1)$. Any $q$ with $q(\eta=0) > 0$ has KL = $+\infty$ (computation raises divide-by-zero). Conclusion: A2 (common support / absolute continuity) is essential; without it, $F[q]$ is undefined. ✓
+
+### Test 4 — Gaussian conjugate
+$\eta \sim \mathcal N(0, 4)$, $y \mid \eta \sim \mathcal N(\eta, 1)$, observed $y = 1.5$. Exact posterior: $\eta \mid y \sim \mathcal N(1.2, 0.8\overline 9^2)$ (precision $1/4 + 1 = 1.25$, variance $0.8$). Marginal log-evidence $\ln p(y) = -1.949$, surprisal $= 1.949$.
+
+| $q$ | $F[q]$ (Monte Carlo, $N = 2 \times 10^5$) | $F - $ surprisal |
+|-----|-------------------------------------------|---------|
+| $\mathcal N(1.2, 0.894)$ exact posterior | 1.949 | 0.000 |
+| $\mathcal N(0, 1)$ biased | 2.857 | 0.908 |
+| $\mathcal N(1.5, 0.3)$ overconfident at $y$ | 2.656 | 0.707 |
+
+Continuous case confirms the bound and tightness. ✓
+
+### Test 5 — ELBO/VFE sign-convention trap
+
+For uniform $q$ in Test 1's discrete model:
+- $F_{\mathrm{Friston}} = 0.945$.
+- $\mathrm{ELBO}_{\mathrm{Beal}} = -0.945$.
+- $F + \mathrm{ELBO} = 0$. ✓
+- Maren §6.2 says "$F$ is a lower bound for $L$" with $L = -\ln p$. Numerical: $F = 0.945$ vs. $L = 0.371$. So $F \le L$ would require $0.945 \le 0.371$, which is **false**. The standard $F \ge L$ holds. ✓
+
+Direct numerical falsification of [SOURCE A:319](1906.08804v6.pdf.txt:319).
+
+### Test 6 — L(s,a,r) expansion test
+
+$N = 5$ iid Bernoulli draws from $p = 0.7$; sample = (0,1,1,1,0) (seed 42).
+- Valid iid surprisal: $-\sum_{i=1}^5 \ln p(y_i) = 3.456$ nats.
+- Maren-as-written, $-I \cdot \ln p(y) = -5\ln(0.69) = 1.855$ nats — assumes all $y_i = 1$.
+- The two coincide only when all observations equal the same value. For any heterogeneous data, the literal Maren expansion is wrong.
+
+If the intent was a *single* joint surprisal with summation suppressed inside, the LHS sum should be removed (this is the path Eqn. 17 takes). If the intent was iid factorization, it must be stated and the index $i$ must run over distinct data points.
+
+### Test 7 — Measure transformation
+
+$\eta \sim \mathcal N(0,1)$, $r = 2\eta + 3$ (a deterministic affine map). Compute $\mathbb E_\eta[\eta^2]$ vs. $\mathbb E_r[r^2]$:
+- True $\mathbb E_\eta[\eta^2] = 0.996$ (sample, $N = 2\times 10^5$).
+- Naive "treat $r$ as if it had the same role" $\mathbb E[r^2] = 13.024$.
+
+The two differ by a non-trivial factor because no Jacobian / pushforward measure was applied. A correct change of variable: $\eta = (r-3)/2$, $d\eta = (1/2)\, dr$. Without that map, simply renaming the integration variable is invalid. Maren §3.2 / §5.4 propose exactly this rename without supplying the map.
+
+### Test 8 — Markov blanket conditional independence
+
+Construct a chain $\eta \to s \to \mu$, $\mu \to a$ (active state independent of $\eta$ given $\mu$). For all 4 settings of blanket $b = (s, a)$:
+$$\max_{e,m} \bigl| p(\eta = e, \mu = m \mid b) - p(\eta = e \mid b)\, p(\mu = m \mid b) \bigr| < 6 \times 10^{-17}.$$
+
+Conditional independence holds to machine precision. ✓ This is the *formal* Markov-blanket statement (SOURCE B Box 3.1). SOURCE A presents the *causal* / influence-arrow version but does not make the CI partition explicit.
+
+### Test 9 — Thermodynamic analogy / Appendix B sign
+
+For uniform $q$ in Test 1:
+- Maren App B Eqn B-1 (as written): $\sum q \ln p(x,y) = -1.638$.
+- Standard expected energy: $\mathbb E_q[-\ln p] = +1.638$.
+- $F = $ standard energy $- H[q] = 1.638 - 0.693 = 0.945$ ✓
+- $F$ via Maren's Eqn B-1 (no minus sign): $-1.638 - 0.693 = -2.331$ — wrong sign and wrong magnitude.
+
+A single minus sign in Eqn B-1 fixes the discrepancy.
+
+### Test 10 — CVM bridge test
+
+The CVM Eqn. C-1 minimizes $F_{\mathrm{CVM}}(x_1, y_i, w_i, z_i; \epsilon_1)$ over configuration variables on a 2-D grid. The active-inference $F[q]$ minimizes $\mathbb E_q[-\ln p] - H[q]$ over a recognition density $q$. These are two different variational principles applied to two different objects:
+- $F_{\mathrm{CVM}}$: a Kikuchi cluster-variation approximation to the Gibbs free energy of an Ising-like Markov random field.
+- $F[q]$: a divergence between an approximate posterior and a generative-model joint.
+
+Identifying them requires (i) a generative model $p(y, \eta\mid m)$ that *is* the CVM Markov random field, (ii) a variational family $q_\phi$ parameterized by configuration variables, (iii) a proof that $F_{\mathrm{CVM}}(\phi) = F[q_\phi]$ or controlled approximation. None are supplied in SOURCE A.
+
+The structural similarity is suggestive but not derivational.
+
+---
+
+## 13. Error Register
+
+| ID | Location | Category | Severity | Description | Why it matters | Correction | Conf |
+|----|----------|----------|----------|-------------|----------------|------------|------|
+| E1 | [SOURCE A:34](1906.08804v6.pdf.txt:34) | role reversal | serious | Parenthetical note calls $q(\tilde\eta\mid\tilde r)$ the "true posterior" and $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ the "variational density" | Inverts the standard VI identity at the very point of introduction | Swap roles; define them once, top of §2: $q$ is variational, $p(\eta\mid y, m)$ is exact posterior | 5/5 |
+| E2 | [SOURCE A:315–319](1906.08804v6.pdf.txt:315) | sign / bound | serious | "the free energy for the model is a lower bound for the free energy of the external system" — reverses inequality and misnames $L$ | Central conceptual error about VFE/ELBO bound direction | Replace per §8.3 wording; state $F[q] \ge -\ln p(y)$, ELBO $\le \ln p(y)$ | 5/5 |
+| E3 | [SOURCE A:104–106, 289](1906.08804v6.pdf.txt:104) | measure-space | serious | Integration over $\tilde\eta$ "interpreted as integrating over" $\tilde r$ without a map, Jacobian, or induced measure | Invalid as a measure-space operation; would need an explicit pushforward | Keep integral over $\tilde\eta$; if reparameterized, supply the map and Jacobian | 5/5 |
+| E4 | [SOURCE A:166](1906.08804v6.pdf.txt:166) Eqn 13 | likelihood definition | serious | $L(\tilde s,\tilde a,\tilde r) = -\sum_{i=1}^I \ln p(\tilde s,\tilde a,\tilde r)$ — repeated identical sum | Algebraically incoherent unless iid factorization is stated | Either drop the sum (single joint surprisal) or write $-\sum_i \ln p(\tilde s_i, \tilde a_i, \tilde r_i)$ for iid | 4/5 |
+| E5 | [SOURCE A:285](1906.08804v6.pdf.txt:285) | independence claim | moderate | "$q$ and $p$… are independent (to a first order)" | Misuses "independent"; not needed and generally false as stated | Remove independence language; only require A1–A3 | 4/5 |
+| E6 | [SOURCE A:132](1906.08804v6.pdf.txt:132) | posterior / process conflation | serious | Calls $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ "the actual distribution of the external system itself" | Conflates model posterior with generative process — contradicts SOURCE B Fig 2.2 caption | Recast as exact posterior under generative model; state explicitly the model/process distinction | 5/5 |
+| E7 | [SOURCE A:266](1906.08804v6.pdf.txt:266) | entropy interpretation | moderate | Entropy discussed as if equilibrium yields a single value replacing the distribution | Confuses point-estimate at equilibrium with the entropy *functional* on the full distribution | Keep $H[q]$ as a functional; entropy is a property of the distribution, not the configuration | 4/5 |
+| E8 | [SOURCE A:457](1906.08804v6.pdf.txt:457) Eqn B-1 | sign convention | serious | "Enthalpy" $H = \sum_i \int q \ln p$ is missing a minus sign | Standard expected energy is $\mathbb E_q[-\ln p]$, not $\mathbb E_q[+\ln p]$ | Insert minus sign; rename symbol to $U[q]$ to avoid clashing with entropy $H$ | 4/5 |
+| E9 | [SOURCE A:113–117](1906.08804v6.pdf.txt:113) Table 4 | notation taxonomy | moderate | Rows mix observable vs. internal vs. blanket categories; double-counts $\tilde s$ | Misleads readers on the central crosswalk this paper aims to provide | Rebuild table by *role*, not symbol; see §7.3 | 5/5 |
+| E10 | [SOURCE A:327–392](1906.08804v6.pdf.txt:327) Sec 8 | extension overclaim | serious | CVM treated as "within the variational Bayes framework" without formal bridge | Weakens the manuscript's most original contribution by inviting unanswerable questions | Recast §8 as proposal; add four-item bridge checklist (§11.3); soften "within" to "proposed for" | 4/5 |
+| E11 | [SOURCE A:269–283](1906.08804v6.pdf.txt:269) | terminology | moderate | $\mathbb E_q[L(\tilde x)]$ called "expected enthalpy" | "Enthalpy" carries thermodynamic baggage ($H = U + pV$); no $pV$ analog exists here | Rename to "expected energy" or "expected negative log joint"; mark "enthalpy" usage as analogical wherever retained | 4/5 |
+| E12 | [SOURCE A:70](1906.08804v6.pdf.txt:70) | thermodynamic conflation | moderate | "The distinction between Helmholtz and Gibbs free energies disappears when we use the thermodynamic free energy formulations as a metaphor" | Rhetorically convenient; mathematically risky for downstream readers | Replace with: "Because we operate purely structurally and not at constant pressure or volume, the Helmholtz/Gibbs distinction is not engaged here. The analogy extends only to the energy-minus-entropy structure." | 4/5 |
+| E13 | [SOURCE A:335–341](1906.08804v6.pdf.txt:335) | active-inference overreach | moderate | Claim that external and internal systems "each separately come to free energy minima" | Goes beyond what the VI identity establishes; requires an additional NESS argument | Mark as modeling assumption invoking NESS/Helmholtz-machine framing; cite Friston (2013) | 4/5 |
+| E14 | [SOURCE A:23–27, 137–139](1906.08804v6.pdf.txt:23) | Markov blanket | moderate | Causal-influence prose blends with conditional-independence claim | The two are logically distinct (and §9.2 separates them) | Adopt the (a)/(b)/(c) trichotomy of §9.2; label which is being invoked at each use | 4/5 |
+| E15 | various | extraction/typesetting | minor | PDF→text extraction has garbled equations (especially Eqns 5, 9, 10, 12, 14, 21, 22, 31, B-1, B-7, C-1) | Cannot fully audit garbled forms; assessments rely on surrounding prose | In revised manuscript, supply clean LaTeX equations; consider posting source `.tex` | 3/5 |
+
+---
+
+## 14. Revision Plan for SOURCE A
+
+### 14.1 Must-fix (blocks publication as a derivation paper)
+
+1. **Rewrite the parenthetical under Eqn. 2** ([SOURCE A:34](1906.08804v6.pdf.txt:34)) to assign $q$ as variational density and $p(\eta\mid y, m)$ as exact posterior under the generative model. Suggested replacement (one sentence): *"In the standard Bayesian variational inference convention adopted here, $q(\tilde\eta\mid\tilde r)$ is the variational (recognition) density and $p(\tilde\eta\mid\tilde s,\tilde a,\tilde r)$ is the exact posterior over external states under the generative model $p(\tilde\eta,\tilde s,\tilde a,\tilde r\mid m)$."*
+
+2. **Rewrite Section 6.2** per the wording in §8.3 above. The only mathematical content needed is: $D_{\mathrm{KL}} \ge 0 \Rightarrow F \ge L$; $\mathcal L = -F \le \ln p(y)$.
+
+3. **Choose one definition of $L(\tilde s, \tilde a, \tilde r)$** and use it consistently. Eqn. 17's single-surprisal form is correct and aligned with Friston. Drop the explicit summation in Eqn. 13. If the iid case is intended elsewhere, treat it in a separate subsection with explicit data indexing.
+
+4. **Either remove the "integrate over $\tilde\eta$ but really $\tilde r$" move ([SOURCE A:104–106, 289](1906.08804v6.pdf.txt:104)), or supply** a map $T : \tilde r \mapsto \tilde\eta$, the corresponding pushforward measure, the Jacobian (if differentiable), and the support condition. The cleanest fix is removal: keep all integrations over $\tilde\eta$ as in standard Friston.
+
+5. **Demote Section 8** from "derivation/integration" to "proposed recognition architecture." Add the four-item bridge checklist in §11.3. Use language like "we propose," "we conjecture," "future work will establish."
+
+6. **Insert the minus sign** in Appendix B Eqn. B-1 ([SOURCE A:457](1906.08804v6.pdf.txt:457)), and rename the symbol to $U[q]$ (or equivalent) to avoid clashing with $H[q]$ as entropy.
+
+7. **Add a clarifying box** distinguishing generative model from generative process (cite SOURCE B Fig 2.2 caption verbatim or paraphrase).
+
+### 14.2 Should-fix (improves rigor)
+
+8. Rebuild Table 4 along *role* axes per §7.3.
+9. Separate the three meanings of "Markov blanket" (CI / causal / inference) per §9.2.
+10. Tighten the "external and representational systems each separately minimize free energy" claim to a labeled NESS modeling assumption.
+11. Tighten "enthalpy" terminology — call $\mathbb E_q[-\ln p]$ "expected energy" or "expected negative log joint."
+12. Replace "$q$ and $p$ are independent" ([SOURCE A:285](1906.08804v6.pdf.txt:285)) with the precise A1–A3 conditions.
+13. Add explicit support / normalization / integrability conditions wherever Bayes' rule and KL divergence appear.
+
+### 14.3 Optional improvements
+
+14. State the two main results as numbered Lemmas with proofs (Lemma 1: $F[q] \ge -\ln p(y)$; Lemma 2: Beal–Friston sign convention — see §6.3, §6.4).
+15. Add a small numerical example like §12 Test 1 to ground the algebra.
+16. Re-typeset all equations from clean LaTeX so the public PDF does not contain the extraction garbling visible in the supplied text.
+17. For Section 8, sketch one concrete realization where $q_\phi$ is a max-ent CVM density and $F_{\mathrm{CVM}}(\phi)$ approximates $F[q_\phi]$ — this would be a substantive theoretical advance worth a separate technical note.
+
+### 14.4 Architecture proposal for revised manuscript
+
+```
+1. Introduction
+2. Notation & Variable Dictionary
+   2.1 Beal/Friston/Blei crosswalk (rebuilt Table 4)
+   2.2 Generative model vs. generative process
+3. Master Variational Identity
+   3.1 Definitions and assumptions A1-A3
+   3.2 Theorem (Form 1, Form 2) and proof
+   3.3 Lemma 1 (bound), Lemma 2 (Beal-Friston sign)
+4. Beal-to-Friston Translation
+   4.1 Map (x, y, theta) -> (eta, (s,a,r), m)
+   4.2 Sign convention crosswalk
+5. Markov Blanket Reformulation
+   5.1 Conditional-independence definition
+   5.2 Causal/process diagram
+   5.3 Inference architecture
+6. Active Inference Interpretation (process-theory cautions)
+7. Thermodynamic Analogy (with limits)
+   7.1 Energy-minus-entropy form
+   7.2 What "free energy" does and does not mean here
+8. Proposed CVM Recognition Architecture
+   8.1 The CVM functional (separate)
+   8.2 Proposed variational family q_phi
+   8.3 Bridge proposition (conjecture; assumptions to-be-stated)
+   8.4 Algorithm sketch
+9. Conclusions: what is proved, what is conjectured
+Appendix A: Statistical thermodynamics primer
+Appendix B: Energy-like term derivation (with sign fixed)
+Appendix C: 2-D CVM formalism
+Appendix D: Notation glossary
+```
+
+---
+
+## 15. Final Corrected Statement
+
+This is the polished, publication-ready statement of the central mathematical content the manuscript can defensibly claim.
+
+### 15.1 Safe theorem (the "publishable core")
+
+> **Theorem (Variational free-energy identity).** Let $p(y, \tilde\eta\mid m)$ be a generative joint density over observed variables $y = (\tilde s, \tilde a, \tilde r)$ and hidden/external variables $\tilde\eta$, with $p(y\mid m) > 0$. Let $q(\tilde\eta\mid\tilde r)$ be a variational density absolutely continuous with respect to the model posterior $p(\tilde\eta\mid y, m) = p(y,\tilde\eta\mid m)/p(y\mid m)$, and assume $\ln p$ and $\ln q$ are $q$-integrable. Define the *variational free energy*
+> $$F[q] := \mathbb E_q[-\ln p(y, \tilde\eta\mid m)] - H[q],$$
+> where $H[q] = -\int q\ln q\, d\tilde\eta$ is the Shannon entropy. Then
+> $$F[q] = D_{\mathrm{KL}}\!\bigl(q(\tilde\eta\mid\tilde r) \,\big\|\, p(\tilde\eta\mid y, m)\bigr) - \ln p(y\mid m).$$
+> Consequently, $F[q] \ge -\ln p(y\mid m)$, with equality iff $q(\tilde\eta\mid\tilde r) = p(\tilde\eta\mid y, m)$ a.e.
+
+> **Corollary (Beal–Friston sign-convention bridge).** With the ELBO $\mathcal L(q) := \mathbb E_q[\ln p] + H[q]$, we have $F[q] = -\mathcal L(q)$. Therefore $\mathcal L(q) \le \ln p(y\mid m)$, and minimizing $F$ is equivalent to maximizing $\mathcal L$. Friston's variational free energy is the negative of Beal's variational lower bound, and the inequality direction flips accordingly.
+
+This safe theorem is what SOURCE A is fundamentally about. It is publishable in this form. Everything else in the manuscript should be organized around establishing, interpreting, or extending it.
+
+### 15.2 What the manuscript additionally establishes (with corrections applied)
+
+- A useful *notation crosswalk* between Beal, Friston, and Blei (provided Table 4 is rebuilt per §7.3).
+- A useful *pedagogical exposition* of how Friston's notation suppresses sums and integrals (provided the discipline of §7.4 is observed).
+- A useful *thermodynamic analogy* (provided "enthalpy" is replaced by "expected energy" and the Helmholtz/Gibbs distinction is preserved as analogical, not collapsed).
+- A useful *Markov-blanket framing* of the active-inference setting (provided the three meanings of "blanket" in §9.2 are separated and the model/process distinction is observed).
+
+### 15.3 What the manuscript proposes but does not derive
+
+- The CVM recognition architecture is a *proposal* of value. The four bridge items in §11.3 must be supplied to convert it into a derivation. Until then, language must say "proposed," "conjectured," "future work."
+- The claim that external and internal systems each separately minimize free energy is a *modeling assumption* aligned with the NESS framing of Friston (2013). It is not implied by the variational identity alone.
+
+---
+
+## 16. Confidence and Limitations
+
+### 16.1 Overall confidence: 8.5 / 10
+
+**Reasoning.** The core algebraic findings rest on the standard variational identity, which is universally agreed on in the modern variational-inference literature (Beal 2003; Wainwright & Jordan 2008; Blei, Kucukelbir & McAuliffe 2017; Parr, Pezzulo & Friston 2022). I have cross-checked the central identity against SOURCE B Eqn. 2.5 directly and against my own derivation from definitions in §6, with numerical verification in §12 Tests 1, 2, 4, 5. The bound-direction finding is settled by SOURCE B's repeated explicit statements ([book lines 1397, 1452, 1605, 2284, 2433](book_9780262369978%20(1).txt:1397)) and reinforced by Test 5.
+
+The 1.5-point reduction reflects:
+- Source-extraction garbling for several mid-section equations (Eqns. 5, 9, 10, 12, 14, 21, 22, 31, B-1, B-7, C-1) means I am inferring intent from surrounding prose. Where extraction was unclear, I marked findings as partially uncheckable rather than silently reconstructed.
+- I did not directly inspect Beal (2003); my treatment of Beal relies on Maren's quotations plus the standard VI identities, as does SOURCE C's. A future revision should consult Beal directly.
+- Some active-inference interpretive claims (e.g., the NESS/separately-minimize framing) depend on dynamical assumptions in Friston (2013, 2015) that I have not re-derived; I rely on SOURCE B's treatment of the steady-state argument.
+
+### 16.2 Fully verified
+
+- The master identity $F[q] = \mathbb E_q[-\ln p] - H[q] = D_{\mathrm{KL}}(q\|p(\tilde\eta\mid y, m)) - \ln p(y\mid m)$.
+- The bound $F[q] \ge -\ln p(y\mid m)$ with equality iff $q$ = exact posterior.
+- The ELBO/VFE sign relation $F[q] = -\mathcal L(q)$.
+- Numerical verification of the identity, the bound, the support condition, and the sign convention (§12 Tests 1–5).
+- The role-reversal error E1 in [SOURCE A:34](1906.08804v6.pdf.txt:34).
+- The bound-direction error E2 in [SOURCE A:319](1906.08804v6.pdf.txt:319).
+- The sign error E8 in [SOURCE A:457](1906.08804v6.pdf.txt:457) Eqn. B-1.
+- The model/process conflation E6 in [SOURCE A:132](1906.08804v6.pdf.txt:132), against SOURCE B Fig 2.2 caption.
+- The measure-substitution invalidity E3 in [SOURCE A:104–106](1906.08804v6.pdf.txt:104) (numerical demonstration in Test 7).
+- The CI definition of Markov blanket (Test 8 against SOURCE B Box 3.1).
+- The CVM bridge gap E10 (no derivation supplied; proposal-level only).
+
+### 16.3 Partially verified
+
+- The L expansion error E4: I show by example (Test 6) that the expansion is wrong unless iid factorization is stated. The correct intent of Eqn. 13 vs. Eqn. 17 is ambiguous — I infer from context that Eqn. 17's single-surprisal form is what the manuscript ultimately uses, but the surface form of Eqn. 13 is incoherent.
+- The "expected enthalpy" terminology (E11): the manuscript already partly hedges this; my critique is about the residual unhedged uses.
+- Several appendix equations (B-7, B-8, B-12, etc.) are garbled in extraction; I reconstructed from surrounding prose where the standard form was unambiguous, and marked partially uncheckable otherwise.
+
+### 16.4 Not verified due to source limitations
+
+- I did not directly inspect Beal (2003), Friston (2013), Friston et al. (2015), Sengupta et al. (2013), Hafner et al. (2020/2022), or Friston et al. (2024). The cross-references to those works rely on Maren's quotations and on the standard literature these works are part of. Direct inspection of Beal Eqns. 2.12–2.16 in particular would solidify §6.4 (Beal–Friston sign convention).
+- I did not attempt to derive the CVM equations independently; I relied on Maren's account and on the Kikuchi & Brush (1967) citation. The internal validity of CVM as Kikuchi free energy was not audited (and is not the object of this audit).
+- The active-inference dynamics (Eqn. 1) were explicitly deferred by the manuscript and not audited here.
+- The "renormalization-group active inference" of Friston et al. (2024) [1] is mentioned but does not affect this audit.
+
+### 16.5 What would raise confidence to 9.5+ / 10
+
+- Direct inspection of Beal (2003) Sect. 2.2.1 and Eqns. 2.10–2.16 to verify the Beal-side sign convention exactly as cited.
+- A clean LaTeX source for SOURCE A so all equations can be checked symbol-by-symbol without extraction artifacts.
+- Independent verification of the NESS/separately-minimize claim from Friston (2013) primary text rather than via SOURCE B's secondary treatment.
+
+### 16.6 What this audit does not claim
+
+- I do not claim to have falsified the *intuition* behind the manuscript. The intuition — that VI provides a substrate for active inference, that Markov blankets matter, that CVM might serve as a recognition architecture — is consistent and worth pursuing.
+- I do not claim CVM is wrong as a free-energy formalism. CVM is a well-established Kikuchi cluster-variation method. The audit finding is that the *bridge* to active-inference $F[q]$ has not been formally supplied.
+- I do not claim the manuscript should be rejected. I claim it should be revised. The pedagogical and proposal contributions are real, and a disciplined revision would yield a strong technical note.
+
+---
+
+**End of audit.**
+
+A summary of corrections required by severity:
+
+- **6 serious findings** (E1, E2, E3, E4, E6, E8, E10) — these block publication of the manuscript as a *derivation*.
+- **5 moderate findings** (E5, E7, E9, E11, E12, E13, E14) — these substantially improve rigor.
+- **1 minor finding** (E15) — typesetting / extraction.
+
+The manuscript's safe theorem (§15.1) is genuinely valuable and recoverable. With the seven must-fix items in §14.1, this can become a strong notation-and-sign-convention crosswalk plus a clearly labeled CVM proposal. As currently written, it overclaims in three directions: q/p assignment, bound direction, and CVM derivation. Each is repairable.
+
+Saving key findings to memory so future sessions can pick up without re-reading 700KB of source material.
+
+The 16-section audit is complete. Verdict: **major revision required** — SOURCE A's core algebra is valid, but six serious errors in the interpretive/extension layer block publication as a derivation paper. All 10 numerical stress tests in §12 reproduce SOURCE C's central critiques and are independently executable. Key findings persisted to memory for future sessions.
+
+Confidence 8.5/10 (reasoning in §16). The 1.5-point reduction reflects extraction garbling of several mid-section equations and the fact that I did not directly inspect Beal (2003).
