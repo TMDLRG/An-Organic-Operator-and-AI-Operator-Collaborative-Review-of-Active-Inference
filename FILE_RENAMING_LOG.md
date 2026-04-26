@@ -1,16 +1,20 @@
 # File Renaming Log
 
-**Date.** 2026-04-25 (Phase P1 of the [Audit Remediation Plan](Audit_Remediation_Plan.md))
-
-**Operation.** Source file copied (not moved) under a clean name. Original file retained for historical reference continuity.
+> **⚠ Important correction (Phase P5, 2026-04-26).** The original premise of this log — that the filename `1906.08804v6.pdf.txt` was "misleading" because the arXiv ID was thought not to correspond to Maren TR-2019-01v6 — **has been reversed**. Direct inspection of the original PDF on 2026-04-26 shows the arXiv watermark `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` on page 1. The original filename was correct. The clean copy under the new name was nonetheless created and remains as a harmless alias; the operation is preserved here for the historical record, but readers should know the rename's *rationale* was wrong.
+>
+> See [`Phase_P5_OODA.md`](Phase_P5_OODA.md) §2 for the full reversal.
 
 ---
 
-## What changed
+## Operation summary
+
+**Date of original operation.** 2026-04-25 (Phase P1 of the [Audit Remediation Plan](Audit_Remediation_Plan.md))
+
+**Operation.** Source file copied (not moved) under a clean human-readable name. Both files preserved.
 
 | Before | After |
 |--------|-------|
-| `1906.08804v6.pdf.txt` (single file, misleading name) | `1906.08804v6.pdf.txt` AND `Maren_TR-2019-01v6.txt` (two bit-identical files) |
+| `1906.08804v6.pdf.txt` (arXiv-ID-bearing filename) | `1906.08804v6.pdf.txt` AND `Maren_TR-2019-01v6.txt` (two bit-identical files) |
 
 Both files exist on disk. SHA-256 of either:
 
@@ -18,57 +22,55 @@ Both files exist on disk. SHA-256 of either:
 b68b852985a5b16742a81e6de2bf161e239e6bd761dca5bae22de6160379dae1
 ```
 
-File size: 130,005 bytes. 643 lines. Verified by `python -c 'import hashlib; ...'` immediately after the copy operation.
+File size: 130,005 bytes. 643 lines. Verified bit-identical immediately after the copy operation.
 
 ---
 
-## Why two files instead of a rename
+## Original (now-corrected) rationale
 
-The original filename `1906.08804v6.pdf.txt` implies an arXiv submission (arXiv:1906.08804) that, on the public arXiv index, does **not** correspond to Maren TR-2019-01v6 — it corresponds to a different paper. The filename is therefore misleading.
+The Phase-P1 rationale was:
 
-A simple rename would have been the obvious fix, but it would break:
+> *"The original filename `1906.08804v6.pdf.txt` implies an arXiv submission (arXiv:1906.08804) that, on the public arXiv index, does not correspond to Maren TR-2019-01v6 — it corresponds to a different paper. The filename is therefore misleading."*
 
-- `Manuscript_Draft_v1.md` line 932 — the only reference inside v1's Appendix E.1.
-- `Revision Research and Test Notes.txt` — the historical audit deliverable from a prior Claude session, which contains 95 markdown links of the form `[SOURCE A:34](1906.08804v6.pdf.txt:34)`.
+**This was wrong.** The Phase-P1 audit was based on an inferred lookup of the public arXiv index, not a direct inspection of the PDF itself. When the original PDF was supplied in Phase P5 (2026-04-26), the page-1 watermark was directly observed: `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024`. **The arXiv ID is real and the original filename was correct.** Maren TR-2019-01v6 is the same paper as arXiv:1906.08804v6. The two identifiers point to the same document.
 
-Both files are *historical artifacts* from completed prior sessions. Modifying them post-hoc would:
+## Why the file copy still stands (and why this log still matters)
 
-1. Lose provenance integrity (the historical record would no longer match what was actually produced).
-2. Require an audit trail of its own to explain the in-place edits.
-3. Create confusion for anyone comparing the live state to the prior session's output.
+Even though the *rationale* was wrong, the copy operation itself is preserved for two reasons:
 
-The copy strategy preserves all 96 historical references intact while making the cleaner name available for active and future work.
+1. **Reverting the copy would unnecessarily disturb the now-public repository.** Both files are bit-identical and harmless. Any future revision that wishes to keep only one filename can do so cleanly.
+2. **The clean human-readable name `Maren_TR-2019-01v6.txt` has independent value as a label.** A reader browsing the working directory benefits from seeing `Maren_TR-2019-01v6.txt` next to other Maren-related artifacts; this is good filename hygiene independent of the arXiv-ID question.
 
-## What references which file
+So the file copy is now framed as: *"a useful human-readable alias, created during a phase that had an incorrect rationale, but with no harm done and some convenience preserved."*
+
+## What references which file (as of post-P5)
 
 | Reference type | Resolves to |
 |----------------|-------------|
-| `Manuscript_Draft_v1.md` line 932 | `1906.08804v6.pdf.txt` (historical; will be updated to clean name in v2) |
-| `Revision Research and Test Notes.txt` (95 references) | `1906.08804v6.pdf.txt` (historical; left intact) |
-| `Manuscript_Draft_v1_Audit.md` (after P1 update) | `Maren_TR-2019-01v6.txt` (active) |
-| `Audit_Remediation_Plan.md` (after P1 update) | `Maren_TR-2019-01v6.txt` (active) |
-| Memory `reference_corpus_files.md` (after P1 update) | `Maren_TR-2019-01v6.txt` (active) |
-| `Provenance_Map.csv` (new in P1) | `Maren_TR-2019-01v6.txt` (active) |
-| `v2_patches.md` (new in P1) | `Maren_TR-2019-01v6.txt` (active) |
-| `Manuscript_Draft_v2.md` (future, Phase P4) | `Maren_TR-2019-01v6.txt` (active) |
+| `Manuscript_Draft_v1.md` line 932 | `1906.08804v6.pdf.txt` (historical; was already correct) |
+| `Revision Research and Test Notes.txt` (95 references) | `1906.08804v6.pdf.txt` (historical; correct) |
+| `Manuscript_Draft_v1_Audit.md` (post-P5) | `Maren_TR-2019-01v6.txt` (clean alias; A.1.a flag reversed) |
+| `Audit_Remediation_Plan.md` (post-P5) | `Maren_TR-2019-01v6.txt` (clean alias) |
+| Memory `reference_corpus_files.md` (post-P5) | `Maren_TR-2019-01v6.txt` (clean alias) |
+| `Manuscript_Draft_v2.md` (post-P5) | `Maren_TR-2019-01v6.txt` (clean alias; Appendix E.1 includes the corrected provenance and the arXiv ID) |
+| `Provenance_Map.csv` (post-P5) | `Maren_TR-2019-01v6.txt` (clean alias) |
+| `v2_patches.md` (post-P5) | `Maren_TR-2019-01v6.txt` (clean alias) |
+| `Phase_P5_OODA.md` | `1906.08804v6.pdf` (the original PDF, supplied by the operator on 2026-04-26 from `~/Downloads/`) |
 
 ## Cost of duplication
 
-130,005 bytes (~130 KB). On any contemporary storage system this is negligible. The benefit is perfect continuity.
+130,005 bytes (~130 KB) of duplicate content on disk. Negligible.
 
-## Future cleanup
+## Future cleanup (revised)
 
-After v2 is published and the historical artifacts are no longer load-bearing for active work, a future session may delete `1906.08804v6.pdf.txt` provided that:
+The original Phase-P1 cleanup criterion ("after v1.md is superseded, the original-name file can be deleted") still applies, but now the deletion would *not* be motivated by the original "misleading filename" reason. If a future revision wants to consolidate to a single filename, either name can be the surviving one:
 
-1. v1.md has been updated (or formally superseded by v2.md and marked archival).
-2. Test Notes' references are no longer relied on for active work.
-3. A note is added to this log recording the deletion.
+- Keeping only `1906.08804v6.pdf.txt`: most conservative, preserves arXiv-ID provenance, breaks readability slightly
+- Keeping only `Maren_TR-2019-01v6.txt`: more readable, preserves audit-chain references, loses the arXiv-ID hint (though Appendix E.1 of v2 carries it explicitly)
 
-Until those conditions are met, **both files must be preserved**.
+Either choice is reasonable. **No action is required.**
 
-## Verification commands
-
-A third-party verifier can confirm the situation with:
+## Verification commands (still valid)
 
 ```bash
 # Both files exist
@@ -78,11 +80,16 @@ ls -la 1906.08804v6.pdf.txt Maren_TR-2019-01v6.txt
 diff 1906.08804v6.pdf.txt Maren_TR-2019-01v6.txt   # zero output expected
 sha256sum 1906.08804v6.pdf.txt Maren_TR-2019-01v6.txt   # same hash both lines
 
-# v1.md and Test Notes still resolve to the historical file
+# v1.md and Test Notes still resolve to the (always-correct) historical filename
 grep -c "1906.08804v6.pdf.txt" Manuscript_Draft_v1.md           # 1
 grep -c "1906.08804v6.pdf.txt" "Revision Research and Test Notes.txt"   # 95
 
-# Active artifacts use the clean name
-grep -c "Maren_TR-2019-01v6.txt" Manuscript_Draft_v1_Audit.md   # 5 (after update)
-grep -c "Maren_TR-2019-01v6.txt" Audit_Remediation_Plan.md      # 2 (after update)
+# Active artifacts post-P5 use the clean alias
+grep -c "Maren_TR-2019-01v6.txt" Manuscript_Draft_v1_Audit.md   # multiple
+grep -c "Maren_TR-2019-01v6.txt" Audit_Remediation_Plan.md      # multiple
+grep -c "Maren_TR-2019-01v6.txt" Manuscript_Draft_v2.md         # multiple
 ```
+
+## Audit-chain integrity note
+
+The fact that the audit caught and corrected its own A.1.a flag in Phase P5 is, paradoxically, *evidence the audit chain is working*. A manuscript whose central virtue is "transparent, auditable, correctable" should produce — and openly document — its own reversals when better evidence becomes available. This log preserves both the original (incorrect) reasoning and the (correct) reversal so that any future reviewer can trace the audit's epistemic state at each phase.

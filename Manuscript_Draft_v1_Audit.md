@@ -36,7 +36,7 @@ Discrepancies and risks are marked with **⚠ FLAG** so they cannot be missed.
 
 **File.** `Maren_TR-2019-01v6.txt` (130,005 bytes; 643 lines; SHA-256 `b68b852985a5b16742a81e6de2bf161e239e6bd761dca5bae22de6160379dae1`). Originally extracted under the misleading filename `1906.08804v6.pdf.txt`; renamed (copied) in Phase P1 — see [FILE_RENAMING_LOG.md](FILE_RENAMING_LOG.md). Both files are bit-identical and resolve to the same content.
 
-**File-name caveat (⚠ FLAG A.1.a — RESOLVED in Phase P1).** The original filename `1906.08804v6.pdf.txt` implies an arXiv submission (arXiv:1906.08804) that does *not* correspond to Maren TR-2019-01v6 in the public arXiv index. In Phase P1 the file was copied to the clean name `Maren_TR-2019-01v6.txt` (the original name retained for historical reference continuity in v1.md and the Test Notes). By direct reading of the file's first 10 lines I confirmed the *contents* are Maren TR-2019-01v6:
+**File-name caveat (⚠ FLAG A.1.a — REVERSED in Phase P5).** The audit originally claimed the filename `1906.08804v6.pdf.txt` implied an arXiv submission that did *not* correspond to Maren TR-2019-01v6 in the public arXiv index. **This was wrong.** Direct inspection of the original PDF in Phase P5 (2026-04-26; see [Phase_P5_OODA.md §2](Phase_P5_OODA.md)) shows the watermark `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` on page 1. The arXiv ID is real; the original filename was correct. The Phase P1 rename rationale ("misleading filename") was based on an inference about the public arXiv index that was not directly verified. The clean copy `Maren_TR-2019-01v6.txt` from Phase P1 remains as a harmless alias — both filenames resolve to the same content. **No action is required to undo the rename**; the correction is to the *rationale* documented in Phase P1, [`FILE_RENAMING_LOG.md`](FILE_RENAMING_LOG.md), and v2 Appendix E.1, which have all been updated. By direct reading of the file's first 10 lines I confirmed the *contents* are Maren TR-2019-01v6:
 
 > Line 1: `Derivation of the Variational Bayes Equations`
 > Line 2: `Alianna J. Maren`
@@ -739,15 +739,15 @@ v1 Appendix E.1 lists materials *not* directly inspected:
 
 This section is the audit's *adversarial pass*. Each item is something a hostile expert reviewer (Friston-class, Maren-class, AII reviewers) might raise. Items rated by *severity* (None / Minor / Moderate / Serious / Fatal) and *likelihood of being raised* (Low / Medium / High).
 
-### H.1 File-naming hygiene — `1906.08804v6.pdf.txt` → `Maren_TR-2019-01v6.txt` (RESOLVED in Phase P1)
+### H.1 File-naming hygiene — REVERSED in Phase P5
 
-**Risk.** Filename implies an arXiv submission that does not (per public arXiv index) correspond to Maren TR-2019-01v6.
+**Risk (as originally framed).** Filename `1906.08804v6.pdf.txt` implies an arXiv submission that does not (per public arXiv index) correspond to Maren TR-2019-01v6.
 
-**Severity.** Minor. **Likelihood.** Low (most reviewers won't check filenames).
+**Severity.** Minor. **Likelihood.** Low.
 
-**Mitigation.** Rename file in revision; add provenance note.
+**Status (Phase P5).** ⚠ **The risk was based on an incorrect inference.** Direct inspection of the original PDF on 2026-04-26 confirms the arXiv watermark `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` on page 1. The arXiv ID *is* real; the original filename was correct. See [Phase_P5_OODA.md §2](Phase_P5_OODA.md) for the reversal.
 
-**Status (Phase P1).** ✅ Resolved by *copy-not-rename*. Both files now exist on disk and are bit-identical (SHA-256 `b68b852985a5b16742a81e6de2bf161e239e6bd761dca5bae22de6160379dae1`). Active-corpus references (this audit, the remediation plan, the memory file, the future v2.md) use the clean name. Historical references in v1.md (1) and `Revision Research and Test Notes.txt` (95) continue to resolve to the original. Documented in [FILE_RENAMING_LOG.md](FILE_RENAMING_LOG.md).
+The Phase-P1 rename to `Maren_TR-2019-01v6.txt` is harmless (both filenames now resolve to bit-identical content via the copy strategy), but the rename's *rationale* was wrong. The corrected accounting is: the clean filename remains as a useful alias / human-readable label, but the original arXiv-ID-bearing filename was always correct as well. No action is required to undo the rename. The corrected rationale is documented in [`FILE_RENAMING_LOG.md`](FILE_RENAMING_LOG.md) (post-P5 update).
 
 ### H.2 SOURCE C model identity — "GPT 5.4 Pro"
 
@@ -944,7 +944,7 @@ In priority order:
 3. **(Important)** Add explicit AI-disclosure statement to front matter that names *both* AI sessions (the prior audit session and the v1-drafting session), per G.1.
 4. **(Important)** Soften "GPT 5.4 Pro" SOURCE C identification per A.3.a.
 5. **(Important)** Inspect Beal (2003) Sect 2.2.1 directly, or weaken Beal-side claims to explicit secondary-citation form, per H.7 and H.10.
-6. ~~**(Recommended)** Rename `1906.08804v6.pdf.txt` to remove arXiv-ID misimpression, per A.1.a.~~ **DONE in Phase P1** — clean copy `Maren_TR-2019-01v6.txt` exists; original retained for historical reference continuity. See [FILE_RENAMING_LOG.md](FILE_RENAMING_LOG.md).
+6. ~~**(Recommended)** Rename `1906.08804v6.pdf.txt` to remove arXiv-ID misimpression, per A.1.a.~~ **REVERSED in Phase P5** — the arXiv ID was real; direct PDF inspection confirms the `arXiv:1906.08804v6 [cs.NE] 18 Aug 2024` watermark on page 1. The original filename was correct. The Phase-P1 rename produced a harmless alias `Maren_TR-2019-01v6.txt`; both filenames resolve to identical content. The rename's *rationale* was based on an incorrect inference about the public arXiv index. See [Phase_P5_OODA.md §2](Phase_P5_OODA.md) and the corrected [FILE_RENAMING_LOG.md](FILE_RENAMING_LOG.md).
 7. **(Recommended)** Add the missing "Complexity − Accuracy" decomposition of Eqn 2.5 to v1 Chapter 2 per B.1.
 8. **(Recommended)** Add E7 wording refinement (functional vs. point-evaluation distinction) per C.7.a.
 9. **(Recommended)** Add E2 wording refinement (the "free energy of the external system" misnomer is *additional* to the bound-direction issue) per C.E2.
