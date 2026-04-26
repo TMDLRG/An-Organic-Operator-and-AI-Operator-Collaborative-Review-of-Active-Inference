@@ -1,6 +1,10 @@
 MIT License
 
-Copyright (c) 2026 Michael Polzin, TMDLRG, and AI co-contributors (Anthropic Claude)
+Copyright (c) 2026 Michael Polzin, TMDLRG, and AI co-contributors:
+  - Anthropic Claude (Opus 4.7) — primary drafting, audit, and P0-P4 remediation
+  - OpenAI GPT, accessed via the "Ai Onna" and "Jules" Custom GPTs,
+    both built on the ORCHESTRATE Method
+    (https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,8 +1,13 @@
 # An Organic Operator and AI Operator Collaborative Review of Active Inference Free Energy Minimization: Reviewable Foundations, Reproducible Tests, and Open Tensions
 
 **Operators**
-Michael Polzin — Organic Operator (project initiator; non-credentialed in this mathematics)
-AI Operators — Drafting, Mathematical Organization, Stress-Test Design, Adversarial Review (Anthropic Claude family, prior GPT-class assistance for an independent peer-review pass)
+
+- **Michael Polzin** — Organic Operator (project initiator; non-credentialed in this mathematics; affiliated with TMDLRG).
+- **AI Operators**:
+  - **Anthropic Claude (Opus 4.7)** — primary drafting, mathematical organization, stress-test design, adversarial review, audit, and Phase P0–P4 remediation across four documented sessions (see Appendix E.2).
+  - **OpenAI GPT**, accessed via two Custom GPTs both built on the **ORCHESTRATE Method** (Polzin, *ORCHESTRATE — Prompting for Professional AI Outputs*, [Amazon](https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6)):
+    - **Ai Onna** Custom GPT — produced the prior independent peer review captured as SOURCE C, which catalyzed this manuscript's audit chain.
+    - **Jules** Custom GPT — collaborator on the ORCHESTRATE prompting workflow.
 
 **Draft date.** 2026-04-25
 
@@ -15,7 +20,7 @@ AI Operators — Drafting, Mathematical Organization, Stress-Test Design, Advers
 This manuscript is a collaborative review. It was produced by a non-credentialed organic operator (Michael Polzin) in disciplined collaboration with AI systems used for drafting, mathematical organization, derivation auditing, stress-test design, and adversarial review.
 
 - Michael Polzin has no formal training in variational Bayes, active inference, statistical mechanics, Markov-blanket theory, or the cluster variation method. He makes no claim of authority over the mathematics. His role is curiosity, persistence, ethical posture, and the requirement that AI assistance expose rather than hide uncertainty.
-- AI systems contributed text drafting, identity derivations, numerical stress tests, comparison against primary sources, and adversarial red-team review. AI outputs may contain errors. AI cannot certify scientific truth.
+- AI systems contributed text drafting, identity derivations, numerical stress tests, comparison against primary sources, and adversarial red-team review. The contributing AI systems are: **Anthropic Claude (Opus 4.7)** for the primary drafting, audit, and Phase P0–P4 remediation; and **OpenAI GPT** accessed via the **Ai Onna** and **Jules** Custom GPTs (both built on the [ORCHESTRATE Method](https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6)) — Ai Onna produced the prior independent peer review (SOURCE C) that catalyzed this audit chain, and Jules is acknowledged as an additional ORCHESTRATE-workflow collaborator. AI outputs may contain errors. AI cannot certify scientific truth.
 - Nothing becomes scientifically authoritative merely by appearing in this manuscript. Public release would make this work *testable*; only expert review, replication, and correction can make it *reliable*.
 - Where a claim is verified by direct derivation or reproducible test, it is labeled. Where it is sourced, the source is identified. Where it is interpretive, proposal-level, or unverified, it is so labeled.
 

@@ -9,6 +9,14 @@
     {
       "name": "Anthropic Claude (Opus 4.7)",
       "affiliation": "Anthropic"
+    },
+    {
+      "name": "OpenAI GPT, via the Ai Onna Custom GPT (built on the ORCHESTRATE Method)",
+      "affiliation": "OpenAI"
+    },
+    {
+      "name": "OpenAI GPT, via the Jules Custom GPT (built on the ORCHESTRATE Method)",
+      "affiliation": "OpenAI"
     }
   ],
   "contributors": [
@@ -16,6 +24,16 @@
       "type": "Other",
       "name": "Anthropic Claude (Opus 4.7)",
       "affiliation": "Anthropic"
+    },
+    {
+      "type": "Other",
+      "name": "Ai Onna (Custom GPT, built on the ORCHESTRATE Method)",
+      "affiliation": "OpenAI"
+    },
+    {
+      "type": "Other",
+      "name": "Jules (Custom GPT, built on the ORCHESTRATE Method)",
+      "affiliation": "OpenAI"
     }
   ],
   "upload_type": "publication",
@@ -54,7 +72,14 @@
       "identifier": "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference",
       "relation": "isSourceOf",
       "resource_type": "software"
+    },
+    {
+      "scheme": "url",
+      "identifier": "https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6",
+      "relation": "isDerivedFrom",
+      "resource_type": "publication-book",
+      "resource_type_title": "ORCHESTRATE — Prompting for Professional AI Outputs"
     }
   ],
-  "notes": "AI authorship and contribution disclosure: produced by Anthropic Claude (Opus 4.7) in collaboration with Michael Polzin (organic operator) over four documented sessions (audit, drafting, audit-of-audit, P0-P4 remediation). See Manuscript_Draft_v2.md front matter and Appendix E.2 for full session-by-session provenance. AI-generated content remains provisional until reviewed by qualified human experts."
+  "notes": "AI authorship and contribution disclosure: produced by Anthropic Claude (Opus 4.7) in collaboration with Michael Polzin (organic operator) over four documented sessions (audit, drafting, audit-of-audit, P0-P4 remediation). The prior independent peer review captured as SOURCE C was produced by the 'Ai Onna' Custom GPT, running on OpenAI's GPT platform, built on the ORCHESTRATE Method (https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6); the 'Jules' Custom GPT (also OpenAI / ORCHESTRATE) is acknowledged as additional AI co-contributor. See Manuscript_Draft_v2.md front matter and Appendix E.2 for full session-by-session provenance. AI-generated content remains provisional until reviewed by qualified human experts."
 }

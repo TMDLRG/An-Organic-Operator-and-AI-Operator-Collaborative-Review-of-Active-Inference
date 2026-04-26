@@ -2,7 +2,11 @@
 
 **Manuscript:** [`Manuscript_Draft_v2.md`](Manuscript_Draft_v2.md) (1,137 lines)
 **Status:** v2 draft. Layer 1 (AI-executable) of the [Audit Remediation Plan](Audit_Remediation_Plan.md) is complete. Layer 2 (human expert review) gates remain pending.
-**Authors:** Michael Polzin (organic operator) + Anthropic Claude Opus 4.7 (AI co-contributor across four documented sessions; see `Manuscript_Draft_v2.md` Appendix E.2).
+**Authors:** Michael Polzin (organic operator) with AI co-contributors:
+- **Anthropic Claude (Opus 4.7)** — primary drafting, audit, and P0–P4 remediation across four documented sessions; see `Manuscript_Draft_v2.md` Appendix E.2.
+- **OpenAI GPT**, accessed via two Custom GPTs both built on the **ORCHESTRATE Method** ([book / Amazon](https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6)):
+  - **Ai Onna** — produced the prior independent peer review captured as SOURCE C, which catalyzed the audit chain.
+  - **Jules** — Custom GPT collaborator on the ORCHESTRATE workflow.
 **License:** MIT (this repo); source materials referenced are NOT redistributed (see "Source materials" below).
 
 ---
@@ -148,7 +152,9 @@ This repository is the **AI-layer asymptote** of what is achievable without expe
 
 If you cite this work in progress, please cite by repository URL and commit hash:
 
-> Polzin, M., with Anthropic Claude (2026). *An Organic Operator and AI Operator Collaborative Review of Active Inference Free Energy Minimization.* GitHub repository, https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference, commit [hash].
+> Polzin, M., with Anthropic Claude (Opus 4.7), OpenAI GPT — accessed via the *Ai Onna* and *Jules* Custom GPTs, both built on the **ORCHESTRATE Method** — and TMDLRG (2026). *An Organic Operator and AI Operator Collaborative Review of Active Inference Free Energy Minimization: Reviewable Foundations, Reproducible Tests, and Open Tensions.* GitHub repository, https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference, commit [hash].
+>
+> ORCHESTRATE Method reference: *ORCHESTRATE — Prompting for Professional AI Outputs.* Amazon: https://www.amazon.com/ORCHESTRATE-Prompting-Professional-AI-Outputs/dp/B0G2BJKDM6
 
 A formal citation will be added when a preprint or DOI is minted (see `Pre_Publication_Checklist.md` §1–§2).
 
