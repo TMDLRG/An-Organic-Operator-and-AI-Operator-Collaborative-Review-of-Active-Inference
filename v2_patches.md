@@ -464,6 +464,14 @@ This names individuals as suggested reviewers without explicit "no commitment" h
 
 **Acceptance.** A future Layer 2 reviewer with the original PDF can settle E8 *and* the other extraction-garbled equations in a single inspection pass.
 
+**⚠ P5 update — SETTLED 2026-04-26.** The original Maren PDF was supplied by the organic operator on 2026-04-26 and inspected directly by Anthropic Claude (Opus 4.7) page-by-page. **E8 settlement outcome:**
+
+- Eqn B-1 (PDF page 54) confirmed to LACK the minus sign (verbatim transcription in [`Phase_P5_OODA.md`](Phase_P5_OODA.md) §4)
+- Eqn B-8 (PDF page 58) confirmed to HAVE the minus sign (the corrected Friston-convention form)
+- Maren's own page-56 acknowledgment confirmed verbatim: *"We do not have agreement between the formulation given in Eqn. B-1 and that given in Eqn. A-13 together with Eqn. A-14."*
+
+Per the acceptance gate's "If the original lacks the minus sign, upgrade confidence to 5/5 and retain as Serious", this patch's confidence rating updates accordingly. The applied v2 Appendix D entry (per the post-P5 revision applied in commit `92dcd81`) includes the full settlement narrative, the verbatim quotations, and a *refined* repair recommendation: relabel B-1 explicitly as Beal-convention or remove it (since B-8 is the operative Friston-convention form actually used downstream). This refines the original "insert a minus sign and rename U[q]" recommendation, which would have been correct only if the issue were a typo rather than a Beal-vs-Friston convention mismatch. **E15** (extraction artifacts) was also resolved as a result of the same inspection — the text extraction was substantively faithful; only Greek letters and operator symbols were rendered as artifacts. See [`Phase_P5_OODA.md`](Phase_P5_OODA.md) §3, §4, and §6 (reviewer report).
+
 ---
 
 ## Patch P-27 — Severity-rating rationale (Plan §5, H.9)
