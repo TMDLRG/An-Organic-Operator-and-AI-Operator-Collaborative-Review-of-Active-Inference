@@ -20,6 +20,13 @@ on:
   pull_request:
     branches: [main, master]
 
+# Opt into Node.js 24 for JavaScript actions ahead of the 2026-06-02 default
+# switch (per GitHub Actions deprecation notice). Lets us continue using
+# actions/checkout@v4 and actions/setup-python@v5 without breaking when
+# Node.js 20 is removed from runners on 2026-09-16.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 defaults:
   run:
     working-directory: ./manuscript-v2-reproducibility

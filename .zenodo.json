@@ -1,0 +1,60 @@
+{
+  "title": "An Organic Operator and AI Operator Collaborative Review of Active Inference Free Energy Minimization: Reviewable Foundations, Reproducible Tests, and Open Tensions",
+  "description": "An audit-grade collaborative review of variational free energy as it is used in active inference, organized as a transparent re-presentation of the central variational identity together with a sentence-level provenance trail and a deterministic reproducibility test suite (87 pytest assertions across 11 numerical demonstrations, CI-verified across Linux × Windows × macOS × Python 3.11/3.12/3.13). Treats Maren's Themesis Technical Report TR-2019-01v6 as a test case for the audit method, not a target. Layer 1 (AI-executable) of the audit remediation plan is complete; Layer 2 (human expert review) gates remain pending. Source materials referenced (Maren TR-2019-01v6; Parr/Pezzulo/Friston 2022; SOURCE C GPT review) are NOT redistributed in this repository.",
+  "creators": [
+    {
+      "name": "Polzin, Michael",
+      "affiliation": "TMDLRG"
+    },
+    {
+      "name": "Anthropic Claude (Opus 4.7)",
+      "affiliation": "Anthropic"
+    }
+  ],
+  "contributors": [
+    {
+      "type": "Other",
+      "name": "Anthropic Claude (Opus 4.7)",
+      "affiliation": "Anthropic"
+    }
+  ],
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "active inference",
+    "variational inference",
+    "variational Bayes",
+    "free energy principle",
+    "Markov blanket",
+    "reproducibility",
+    "audit-grade review",
+    "AI-augmented research",
+    "Bayesian inference",
+    "computational neuroscience"
+  ],
+  "subjects": [
+    {
+      "term": "Computational neuroscience",
+      "identifier": "https://www.wikidata.org/wiki/Q838425"
+    },
+    {
+      "term": "Bayesian inference",
+      "identifier": "https://www.wikidata.org/wiki/Q812535"
+    },
+    {
+      "term": "Variational Bayesian methods",
+      "identifier": "https://www.wikidata.org/wiki/Q21063556"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "scheme": "url",
+      "identifier": "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference",
+      "relation": "isSourceOf",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "AI authorship and contribution disclosure: produced by Anthropic Claude (Opus 4.7) in collaboration with Michael Polzin (organic operator) over four documented sessions (audit, drafting, audit-of-audit, P0-P4 remediation). See Manuscript_Draft_v2.md front matter and Appendix E.2 for full session-by-session provenance. AI-generated content remains provisional until reviewed by qualified human experts."
+}

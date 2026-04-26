@@ -1,0 +1,90 @@
+cff-version: 1.2.0
+message: >-
+  If you cite this manuscript, its audit chain, or the
+  reproducibility test suite, please cite as below.
+title: >-
+  An Organic Operator and AI Operator Collaborative Review of Active
+  Inference Free Energy Minimization: Reviewable Foundations,
+  Reproducible Tests, and Open Tensions
+abstract: >-
+  An audit-grade collaborative review of variational free energy as it
+  is used in active inference, organized as a transparent re-presentation
+  of the central variational identity together with a sentence-level
+  provenance trail and a deterministic reproducibility test suite.
+  Treats Maren's Themesis Technical Report TR-2019-01v6 ("Derivation
+  of the Variational Bayes Equations") as a test case for the audit
+  method, not a target. Layer 1 (AI-executable) of the audit remediation
+  plan is complete; Layer 2 (human expert review) gates remain pending.
+authors:
+  - family-names: Polzin
+    given-names: Michael
+    email: mpolzin@zimzap.com
+    affiliation: TMDLRG
+  - name: "Anthropic Claude (Opus 4.7)"
+    affiliation: Anthropic
+    website: "https://www.anthropic.com"
+type: software
+repository-code: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
+url: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
+license: MIT
+version: "v2-draft-2026-04-26"
+date-released: "2026-04-26"
+keywords:
+  - active inference
+  - variational inference
+  - variational Bayes
+  - free energy principle
+  - Markov blanket
+  - reproducibility
+  - audit-grade review
+  - AI-augmented research
+  - Bayesian inference
+  - computational neuroscience
+identifiers:
+  - type: url
+    value: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
+    description: "GitHub repository (canonical)"
+references:
+  - type: report
+    title: "Derivation of the Variational Bayes Equations"
+    authors:
+      - family-names: Maren
+        given-names: "Alianna J."
+    year: 2024
+    institution:
+      name: "Themesis"
+    number: "TR-2019-01v6"
+    notes: >-
+      The manuscript audited by this work as a test case. Not redistributed
+      in this repository. Available from Themesis or by contacting the author.
+  - type: book
+    title: "Active Inference: The Free Energy Principle in Mind, Brain, and Behavior"
+    authors:
+      - family-names: Parr
+        given-names: Thomas
+      - family-names: Pezzulo
+        given-names: Giovanni
+      - family-names: Friston
+        given-names: "Karl J."
+    year: 2022
+    publisher:
+      name: "MIT Press"
+    isbn: "9780262045353"
+    notes: >-
+      Canonical contemporary reference for active-inference variational
+      free energy. Used as adjudication standard throughout the audit.
+      Open access from MIT Press under CC BY-NC-ND.
+preferred-citation:
+  type: software
+  title: >-
+    An Organic Operator and AI Operator Collaborative Review of Active
+    Inference Free Energy Minimization
+  authors:
+    - family-names: Polzin
+      given-names: Michael
+      affiliation: TMDLRG
+    - name: "Anthropic Claude (Opus 4.7)"
+      affiliation: Anthropic
+  year: 2026
+  url: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
+  version: "v2-draft-2026-04-26"
