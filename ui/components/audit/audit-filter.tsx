@@ -92,7 +92,7 @@ function Card({ f }: { f: AuditFinding }) {
           <span className="font-medium text-fg/70">{f.category}</span> · {f.location}
         </div>
         <div className="text-sm leading-relaxed">{f.description}</div>
-        <Field label="Why it matters" value={f.whyItMatters} />
+        {f.whyItMatters && <Field label="Why it matters" value={f.whyItMatters} />}
         <Field label="Proposed repair" value={f.proposedRepair} />
       </div>
     </article>

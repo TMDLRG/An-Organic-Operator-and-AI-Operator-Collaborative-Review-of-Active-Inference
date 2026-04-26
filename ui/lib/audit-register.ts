@@ -50,20 +50,28 @@ export function readAuditRegister(): { findings: AuditFinding[]; phase5Notes: st
       // Drop empty leading/trailing cells from leading/trailing |
       while (cells.length && cells[0] === "") cells.shift();
       while (cells.length && cells[cells.length - 1] === "") cells.pop();
-      if (cells.length < 8) continue;
+      // Accept 8-column (canonical) and 7-column (some rows merge description+why)
+      if (cells.length < 7) continue;
       const id = stripMarkdown(cells[0] ?? "");
       if (id === "ID" || id.startsWith("---") || id.startsWith(":-")) continue;
       if (!/^E\d+[a-z]?$/.test(id)) continue;
+      // For 7-column rows: cells are [id, loc, cat, sev, description-and-why, repair, conf]
+      // For 8-column rows: cells are [id, loc, cat, sev, description, why, repair, conf]
+      const merged = cells.length === 7;
+      const desc = (cells[4] ?? "").trim();
+      const why = merged ? "" : (cells[5] ?? "").trim();
+      const repair = merged ? (cells[5] ?? "").trim() : (cells[6] ?? "").trim();
+      const conf = merged ? (cells[6] ?? "") : (cells[7] ?? "");
       findings.push({
         id,
         location: stripMarkdown(cells[1] ?? ""),
         category: stripMarkdown(cells[2] ?? ""),
         severity: parseSeverity(cells[3] ?? ""),
-        description: (cells[4] ?? "").trim(),
-        whyItMatters: (cells[5] ?? "").trim(),
-        proposedRepair: (cells[6] ?? "").trim(),
-        confidence: stripMarkdown(cells[7] ?? ""),
-        pdfVerified: (cells[7] ?? "").includes("PDF-verified") || (cells[3] ?? "").includes("Phase P5"),
+        description: desc,
+        whyItMatters: why,
+        proposedRepair: repair,
+        confidence: stripMarkdown(conf),
+        pdfVerified: conf.includes("PDF-verified") || (cells[3] ?? "").includes("Phase P5"),
       });
     }
   }

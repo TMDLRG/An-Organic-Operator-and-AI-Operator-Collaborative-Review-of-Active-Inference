@@ -34,6 +34,26 @@ test.describe("Audit register", () => {
     await expect(page.getByText(/Serious\s+\d+/).first()).toBeVisible();
     await expect(page.getByText("E1", { exact: false }).first()).toBeVisible();
   });
+
+  test("all 16 findings render including 7-column merged rows (E2a, E2b, E7)", async ({ page }) => {
+    await page.goto("/audit");
+    // Wait for cards to render
+    await expect(page.locator("article header span.font-mono").first()).toBeVisible();
+    const ids = await page.locator("article header span.font-mono").allInnerTexts();
+    const expected = ["E1","E2a","E2b","E3","E4","E5","E6","E7","E8","E9","E10","E11","E12","E13","E14","E15"];
+    for (const id of expected) expect(ids).toContain(id);
+  });
+
+  test("severity filter pill toggles cards on and off", async ({ page }) => {
+    await page.goto("/audit");
+    const seriousBtn = page.getByRole("button", { name: "Serious", exact: true });
+    await seriousBtn.click(); // deselect
+    // Counter should drop below 16
+    await expect(page.getByText(/\d+\/16/)).toBeVisible();
+    const counterText = await page.getByText(/^\d+\/16$/).first().textContent();
+    expect(counterText).not.toEqual("16/16");
+    await seriousBtn.click(); // re-select
+  });
 });
 
 test.describe("Surface B — Math runner", () => {
