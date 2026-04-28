@@ -13,13 +13,32 @@ function resolveRepoRoot(): string {
 }
 const REPO_ROOT = resolveRepoRoot();
 
-const ALLOWED_EXT = new Set([".md", ".csv", ".cff", ".yml", ".yaml", ".json", ".py", ".txt", ".tsx", ".ts", ".js"]);
+const ALLOWED_EXT = new Set([".md", ".csv", ".cff", ".yml", ".yaml", ".json", ".py", ".txt", ".tsx", ".ts", ".js", ".ex", ".exs"]);
 const DENY_DIRS = new Set([
-  "ui", "node_modules", ".git", ".github", ".claude", ".next",
+  "node_modules", ".git", ".github", ".claude", ".next",
   "knowledgebase",      // browsable separately if needed; large
   "venv", ".venv", "__pycache__", ".pytest_cache",
   "memory",
 ]);
+// Mirror the snapshot-docs.mjs allow-list: within ui/, only surface the
+// Jido reference impl, the TS agent + math libs, and the agents page.
+const UI_ALLOW_PREFIXES = ["ui/agents-elixir/"];
+const UI_ALLOW_FILES = new Set([
+  "ui/lib/agents.ts",
+  "ui/lib/math-tests.ts",
+  "ui/app/agents/page.tsx",
+  "ui/README.md",
+]);
+function uiAllowed(relPosix: string): boolean {
+  if (UI_ALLOW_FILES.has(relPosix)) return true;
+  if (UI_ALLOW_PREFIXES.some((p) => relPosix.startsWith(p))) return true;
+  // Allow ancestor dirs (so the walker descends into them)
+  if (UI_ALLOW_PREFIXES.some((p) => p.startsWith(relPosix + "/") || p === relPosix + "/")) return true;
+  for (const f of UI_ALLOW_FILES) {
+    if (f.startsWith(relPosix + "/")) return true;
+  }
+  return false;
+}
 const DENY_FILES = new Set([
   "1906.08804v6.pdf",
   "1906.08804v6.pdf.txt",
@@ -55,17 +74,19 @@ export function listDocs(): DocEntry[] {
     for (const e of entries) {
       if (e.name.startsWith(".")) continue;
       const full = path.join(dir, e.name);
+      const rel = path.relative(REPO_ROOT, full).split(path.sep).join("/");
       if (e.isDirectory()) {
         if (DENY_DIRS.has(e.name)) continue;
+        if ((rel === "ui" || rel.startsWith("ui/")) && !uiAllowed(rel)) continue;
         walk(full);
       } else if (e.isFile()) {
         if (DENY_FILES.has(e.name)) continue;
         if (DENY_PATTERNS.some((p) => p.test(e.name))) continue;
         const ext = path.extname(e.name).toLowerCase();
         if (!ALLOWED_EXT.has(ext)) continue;
+        if ((rel === "ui" || rel.startsWith("ui/")) && !uiAllowed(rel)) continue;
         let size = 0;
         try { size = fs.statSync(full).size; } catch { /* ignore */ }
-        const rel = path.relative(REPO_ROOT, full).split(path.sep).join("/");
         out.push({
           slug: rel,
           name: e.name,
@@ -102,7 +123,7 @@ const GROUP_RULES: { label: string; pattern: RegExp }[] = [
   { label: "OODA worksheets",   pattern: /^Phase_P\d+_OODA/ },
   { label: "Provenance",        pattern: /^Provenance_Map\.csv|^CITATION\.cff|^\.zenodo\.json/ },
   { label: "Reproducibility",   pattern: /^manuscript-v2-reproducibility\// },
-  { label: "Agents (Jido)",     pattern: /^AGENTS\.md|^knowledgebase\// },
+  { label: "Agents (Jido)",     pattern: /^AGENTS\.md|^knowledgebase\/|^jido\/|^ui\/agents-elixir\/|^ui\/lib\/agents\.ts$|^ui\/app\/agents\/page\.tsx$/ },
   { label: "Codex prompt",      pattern: /^Codex_Verification_and_UI_Prompt/ },
   { label: "Project root",      pattern: /^[^\/]+$/ },
 ];

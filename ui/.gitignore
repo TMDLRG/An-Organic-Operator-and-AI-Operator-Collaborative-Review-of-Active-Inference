@@ -21,3 +21,5 @@ playwright/.cache/
 # committed copy is used directly.
 
 .vercel
+
+.vercel

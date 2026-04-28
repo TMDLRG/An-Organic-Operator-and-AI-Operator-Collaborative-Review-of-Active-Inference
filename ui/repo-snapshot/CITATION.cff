@@ -44,6 +44,12 @@ keywords:
   - Bayesian inference
   - computational neuroscience
 identifiers:
+  - type: doi
+    value: "10.5281/zenodo.19785799"
+    description: "Zenodo archive of v0.1.0 release (2026-04-26)"
+  - type: url
+    value: "https://zenodo.org/records/19785799"
+    description: "Zenodo record (v0.1.0)"
   - type: url
     value: "https://github.com/TMDLRG/An-Organic-Operator-and-AI-Operator-Collaborative-Review-of-Active-Inference"
     description: "GitHub repository (canonical)"

@@ -58,3 +58,11 @@ out1.txt
 out2.txt
 out_local.txt
 .vercel
+
+# Video walkthrough production assets (large binaries, regenerable).
+# We keep video-assets/cards/ HTML and video-assets/scripts/ in git so the
+# narration source and title-card markup are auditable.
+video-assets/audio/
+video-assets/screenshots/
+video-assets/segments/
+video-assets/output/

@@ -15,13 +15,42 @@ const UI_ROOT = path.resolve(__dirname, "..");
 const REPO_ROOT = path.resolve(UI_ROOT, "..");
 const SNAPSHOT_DIR = path.join(UI_ROOT, "repo-snapshot");
 
-const ALLOWED_EXT = new Set([".md", ".csv", ".cff", ".yml", ".yaml", ".json", ".py", ".txt", ".tsx", ".ts", ".js"]);
+const ALLOWED_EXT = new Set([".md", ".csv", ".cff", ".yml", ".yaml", ".json", ".py", ".txt", ".tsx", ".ts", ".js", ".ex", ".exs"]);
 const DENY_DIRS = new Set([
-  "ui", "node_modules", ".git", ".github", ".claude", ".next",
+  "node_modules", ".git", ".github", ".claude", ".next",
   "knowledgebase", "venv", ".venv", "__pycache__", ".pytest_cache",
   "memory", "test-results", "playwright-report", "out",
   "repo-snapshot", "path0", ".vercel",
 ]);
+// Within the ui/ directory, only these specific paths/subtrees are
+// surfaced — the Jido (Elixir) reference implementation, the TypeScript
+// agent / math libs, the agents-page source, and the README. Everything
+// else under ui/ (Next.js scaffolding, components, build files) stays
+// out of the doc viewer to avoid drowning the audit chain in framework
+// noise.
+const UI_ALLOW_PREFIXES = [
+  "ui/agents-elixir/",
+];
+const UI_ALLOW_FILES = new Set([
+  "ui/lib/agents.ts",
+  "ui/lib/math-tests.ts",
+  "ui/app/agents/page.tsx",
+  "ui/README.md",
+]);
+function uiAllowed(relPosix) {
+  // Allow any ancestor directory whose subtree contains an allowed item.
+  if (UI_ALLOW_PREFIXES.some((p) => relPosix === p.replace(/\/$/, "") || (p + "x").startsWith(relPosix + "/"))) return true;
+  // Allow ancestor dirs of any explicit file
+  for (const f of UI_ALLOW_FILES) {
+    if (relPosix === f) return true;
+    if (f.startsWith(relPosix + "/")) return true;     // ancestor dir
+  }
+  // Allow files explicitly listed
+  if (UI_ALLOW_FILES.has(relPosix)) return true;
+  // Allow anything inside an allowed prefix
+  if (UI_ALLOW_PREFIXES.some((p) => relPosix.startsWith(p))) return true;
+  return false;
+}
 const DENY_FILES = new Set([
   "1906.08804v6.pdf",
   "1906.08804v6.pdf.txt",
@@ -42,14 +71,17 @@ function copyTree(srcRoot, destRoot) {
       if (e.name.startsWith(".")) continue;
       const srcPath = path.join(srcDir, e.name);
       const relPath = relDir ? path.join(relDir, e.name) : e.name;
+      const relPosix = relPath.split(path.sep).join("/");
       if (e.isDirectory()) {
         if (DENY_DIRS.has(e.name)) continue;
+        if ((relPosix === "ui" || relPosix.startsWith("ui/")) && !uiAllowed(relPosix)) continue;
         walk(srcPath, relPath);
       } else if (e.isFile()) {
         if (DENY_FILES.has(e.name)) continue;
         if (DENY_PATTERNS.some((p) => p.test(e.name))) continue;
         const ext = path.extname(e.name).toLowerCase();
         if (!ALLOWED_EXT.has(ext)) continue;
+        if ((relPosix === "ui" || relPosix.startsWith("ui/")) && !uiAllowed(relPosix)) continue;
         const destPath = path.join(destRoot, relPath);
         fs.mkdirSync(path.dirname(destPath), { recursive: true });
         const data = fs.readFileSync(srcPath);
